@@ -1,2 +1,5 @@
 language: java
 script: mvn clean compile
+jdk:
+  - oraclejdk8
+  - openjdk8
