@@ -1,5 +1,5 @@
 language: java
-script: mvn clean compile
+script: mvn clean compile -source 8
 jdk:
   - oraclejdk8
   - openjdk8
