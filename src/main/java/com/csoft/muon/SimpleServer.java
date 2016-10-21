@@ -47,36 +47,32 @@ public class SimpleServer {
     private void handleGet(RoutingContext routingContext) {
         int productID = Integer.parseInt(routingContext.request().getParam("item"));
         JsonObject product = items.get(productID);
-        LOGGER.info("Handing GET: {}", product.toString());
+        LOGGER.info("Handing GET: " + product.toString());
         routingContext.response().putHeader("content-type", "application/json").end(product.encodePrettily());
     }
 
     private void handleGetList(RoutingContext routingContext) {
         JsonArray productList = new JsonArray();
         items.forEach((k, v) -> productList.add(v));
-        LOGGER.info("Handing GET: {}", productList.toString());
+        LOGGER.info("Handing GET: " + productList.toString());
         routingContext.response().putHeader("content-type", "application/json").end(productList.encodePrettily());
     }
 
     private void handlePut(RoutingContext routingContext) {
         JsonObject product = routingContext.getBodyAsJson();
-        LOGGER.info("Handing PUT: {}", product.toString());
+        LOGGER.info("Handing PUT: " + product.toString());
         items.put(product.getInteger("id"), product);
         routingContext.response().end();
     }
 
     private void start() {
         vertx.createHttpServer().requestHandler(router::accept).listen(WEB_PORT);
-
     }
-
-
 
     public static void main(String... args) {
         SimpleServer server = new SimpleServer();
         LOGGER.info("Starting SimpleServer...");
         server.start();
-
     }
 
 }
