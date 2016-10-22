@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.vertx.core.Vertx;
+import io.vertx.core.http.HttpServer;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
@@ -22,6 +23,8 @@ public class SimpleServer {
     private Router router;
     private Map<Integer, JsonObject> items;
     
+    private HttpServer httpServer;
+    
     // some sample data as init database
     private JsonObject product1 = new JsonObject()
             .put("id", 1)
@@ -32,7 +35,7 @@ public class SimpleServer {
             .put("label", "item2")
             .put("array", new JsonArray(Arrays.asList(7, 8, 9, 10)));
     
-    SimpleServer() {
+    public SimpleServer() {
         vertx = Vertx.vertx();
         router = Router.router(vertx);
         router.route().handler(BodyHandler.create());
@@ -54,8 +57,11 @@ public class SimpleServer {
     private void handleGetList(RoutingContext routingContext) {
         JsonArray productList = new JsonArray();
         items.forEach((k, v) -> productList.add(v));
+        JsonObject response = new JsonObject()
+                .put("total", productList.size())
+                .put("items", productList);
         LOGGER.info("Handing GET: " + productList.toString());
-        routingContext.response().putHeader("content-type", "application/json").end(productList.encodePrettily());
+        routingContext.response().putHeader("content-type", "application/json").end(response.encodePrettily());
     }
 
     private void handlePut(RoutingContext routingContext) {
@@ -65,9 +71,15 @@ public class SimpleServer {
         routingContext.response().end();
     }
 
-    private void start() {
-        vertx.createHttpServer().requestHandler(router::accept).listen(WEB_PORT);
+    public void start() {
+        httpServer = vertx.createHttpServer().requestHandler(router::accept);
+        httpServer.listen(WEB_PORT);
     }
+    
+    public void stop() {
+        httpServer.close();
+    }
+    
 
     public static void main(String... args) {
         SimpleServer server = new SimpleServer();
