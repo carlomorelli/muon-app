@@ -4,9 +4,10 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-
 import static org.hamcrest.Matchers.hasSize;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -15,8 +16,6 @@ import com.csoft.muon.SimpleServer;
 import com.csoft.muon.lib.RestUtils;
 
 import io.restassured.http.ContentType;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
 
 public class RestApiTest {
 
@@ -28,13 +27,13 @@ public class RestApiTest {
     public void setupClass() {
         server = new SimpleServer();
         LOGGER.info("Starting SimpleServer...");
-        server.start();
+        server.startServer();
     }
 
     @AfterClass
     public void tearDown() {
         LOGGER.info("Stopping SimpleServer...");
-        server.stop();
+        server.stopServer();
     }
 
     @Test
@@ -70,12 +69,12 @@ public class RestApiTest {
     }
 
     @Test
-    public void testPutItem() {
+    public void testPostItem() {
         given()
             .contentType(ContentType.JSON)
             .body(RestUtils.getRandomBody(3).toString())
             .when()
-            .put("/webapi/items/3")
+            .post("/webapi/items")
             .then()
             .assertThat()
             .statusCode(200);

@@ -1,17 +1,22 @@
 package com.csoft.muon.lib;
 
-import java.util.Arrays;
+import java.util.Random;
 
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 public class RestUtils {
 
     public static JsonObject getRandomBody(int index) {
-        JsonObject json = new JsonObject()
-                .put("id", index)
-                .put("label", "item" + index)
-                .put("array", new JsonArray(Arrays.asList(78, 47)));
-        return json;
+        JsonObject item = new JsonObject();
+        item.addProperty("id", index);
+        item.addProperty("label", "item" + index);
+        JsonArray array = new JsonArray();
+        for (int i = 0; i < 5; i++) {
+            array.add((new Random()).nextInt());
+        }
+        item.add("array", array);
+        return item;
     }
+
 }

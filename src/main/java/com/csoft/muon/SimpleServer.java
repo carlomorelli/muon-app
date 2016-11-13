@@ -1,90 +1,85 @@
 package com.csoft.muon;
 
-import java.util.Arrays;
+import static spark.Spark.get;
+import static spark.Spark.port;
+import static spark.Spark.post;
+import static spark.Spark.stop;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import io.vertx.core.Vertx;
-import io.vertx.core.http.HttpServer;
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
-import io.vertx.ext.web.Router;
-import io.vertx.ext.web.RoutingContext;
-import io.vertx.ext.web.handler.BodyHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.csoft.muon.lib.RestUtils;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import spark.Request;
+import spark.Response;
 
 public class SimpleServer {
 
     private static final int WEB_PORT = 8080;
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleServer.class);
 
-    private Vertx vertx;
-    private Router router;
-    private Map<Integer, JsonObject> items;
-    
-    private HttpServer httpServer;
-    
+    private final int webPort;
+    private Map<Integer, JsonObject> inMemoryDb;
+
     // some sample data as init database
-    private JsonObject product1 = new JsonObject()
-            .put("id", 1)
-            .put("label", "item1")
-            .put("array", new JsonArray(Arrays.asList(1, 2, 3)));
-    private JsonObject product2 = new JsonObject()
-            .put("id", 2)
-            .put("label", "item2")
-            .put("array", new JsonArray(Arrays.asList(7, 8, 9, 10)));
-    
+    private JsonObject product1 = RestUtils.getRandomBody(1);
+    private JsonObject product2 = RestUtils.getRandomBody(2);
+
     public SimpleServer() {
-        vertx = Vertx.vertx();
-        router = Router.router(vertx);
-        router.route().handler(BodyHandler.create());
-        router.get("/webapi/items").handler(this::handleGetList);
-        router.get("/webapi/items/:item").handler(this::handleGet);
-        router.put("/webapi/items/:item").handler(this::handlePut);
-        items = new HashMap<>();
-        items.put(product1.getInteger("id"), product1);
-        items.put(product2.getInteger("id"), product2);
+        this(WEB_PORT);
     }
 
-    private void handleGet(RoutingContext routingContext) {
-        int productID = Integer.parseInt(routingContext.request().getParam("item"));
-        JsonObject product = items.get(productID);
-        LOGGER.info("Handing GET: " + product.toString());
-        routingContext.response().putHeader("content-type", "application/json").end(product.encodePrettily());
-    }
-
-    private void handleGetList(RoutingContext routingContext) {
-        JsonArray productList = new JsonArray();
-        items.forEach((k, v) -> productList.add(v));
-        JsonObject response = new JsonObject()
-                .put("total", productList.size())
-                .put("items", productList);
-        LOGGER.info("Handing GET: " + productList.toString());
-        routingContext.response().putHeader("content-type", "application/json").end(response.encodePrettily());
-    }
-
-    private void handlePut(RoutingContext routingContext) {
-        JsonObject product = routingContext.getBodyAsJson();
-        LOGGER.info("Handing PUT: " + product.toString());
-        items.put(product.getInteger("id"), product);
-        routingContext.response().end();
-    }
-
-    public void start() {
-        httpServer = vertx.createHttpServer().requestHandler(router::accept);
-        httpServer.listen(WEB_PORT);
+    public SimpleServer(int webPort) {
+        this.webPort = webPort;
+        inMemoryDb = new HashMap<>();
+        inMemoryDb.put(product1.get("id").getAsInt(), product1);
+        inMemoryDb.put(product2.get("id").getAsInt(), product2);
     }
     
-    public void stop() {
-        httpServer.close();
-    }
     
-
-    public static void main(String... args) {
-        SimpleServer server = new SimpleServer();
-        LOGGER.info("Starting SimpleServer...");
-        server.start();
+    private String handleGet(Request req, Response res) {
+        int id = Integer.parseInt(req.params(":id"));
+        JsonObject item = inMemoryDb.get(id);
+        LOGGER.info("Handing GET: " + item.toString());
+        res.type("application/json");
+        return item.toString();
     }
 
+    private String handleGetList(Request req, Response res) {
+        JsonArray items = new JsonArray();
+        inMemoryDb.forEach((k, v) -> items.add(v));
+        JsonObject itemsFull = new JsonObject();
+        itemsFull.addProperty("total", items.size());
+        itemsFull.add("items", items);
+        LOGGER.info("Handing GET: " + itemsFull.toString());
+        res.type("application/json");
+        return itemsFull.toString();
+    }
+
+    private String handlePost(Request req, Response res) {
+        JsonObject item = new JsonParser().parse(req.body()).getAsJsonObject();
+        LOGGER.info("Handing PUT: " + item.toString());
+        inMemoryDb.put(item.get("id").getAsInt(), item);
+        res.type("application/json");
+        return item.toString();
+    }
+
+     public void startServer() {
+         LOGGER.info("Starting service on port " + webPort + "...");
+         port(webPort);
+         get("/webapi/items/:id", this::handleGet);
+         get("/webapi/items", this::handleGetList);
+         post("/webapi/items", this::handlePost);
+     }
+
+     public void stopServer() {
+         LOGGER.info("Stopping service...");
+         stop();
+     }
 }
