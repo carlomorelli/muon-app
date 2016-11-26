@@ -5,13 +5,16 @@ import static spark.Spark.port;
 import static spark.Spark.post;
 import static spark.Spark.stop;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.csoft.muon.lib.Item;
 import com.csoft.muon.lib.RestUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -64,6 +67,20 @@ public class SimpleServer {
 
     private String handlePost(Request req, Response res) {
         JsonObject item = new JsonParser().parse(req.body()).getAsJsonObject();
+        
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            Item newItem = mapper.readValue(req.body(), Item.class);
+            if (!newItem.isValid()) {
+                throw new IllegalArgumentException("Non null / non empty fields are required in input");
+            }
+        } catch (IOException | IllegalArgumentException e) {
+            //note: IOException is thrown by ObjectMapper when cast class is not respected
+            res.status(404);
+            return "";
+        }
+        
+        
         LOGGER.info("Handing PUT: " + item.toString());
         inMemoryDb.put(item.get("id").getAsInt(), item);
         res.type("application/json");
