@@ -14,18 +14,20 @@ import org.testng.annotations.Test;
 
 import com.csoft.muon.SimpleServer;
 import com.csoft.muon.lib.RestUtils;
+import com.csoft.muon.repository.Repository;
+import com.csoft.muon.repository.RepositoryImpl;
 
 import io.restassured.http.ContentType;
 
 public class RestApiTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleServer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestApiTest.class);
 
     private SimpleServer server;
 
     @BeforeClass
     public void setupClass() {
-        server = new SimpleServer();
+        server = new SimpleServer(new RepositoryImpl());
         LOGGER.info("Starting SimpleServer...");
         server.startServer();
     }

@@ -18,5 +18,10 @@ public class RestUtils {
         item.add("array", array);
         return item;
     }
+    
+    public static Item getRandomItem(int index) {
+        String label = "label-" + index;
+        return new Item(index, label);
+    }
 
 }

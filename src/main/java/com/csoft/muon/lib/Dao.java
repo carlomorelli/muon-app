@@ -55,20 +55,4 @@ public class Dao {
         conn.close();
     }
 
-    public static void main(String... args) throws Exception {
-        
-        // start the tcp H2 Server
-        Server server = Server.createTcpServer("-tcpPort", "9093").start();
-        LOGGER.info("Stated H2 server [{}]", server.getStatus());
-        
-        Thread.sleep(1000);
-        Dao db = new Dao("jdbc:h2:./test.db", "sa", "");
-        db.prepareDb();
-        
-        // stop the server
-        Thread.sleep(1000);
-        server.stop();
-        LOGGER.info("Stopped H2 server [{}]", server.getStatus());
-        
-    }
 }
