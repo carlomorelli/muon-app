@@ -1,8 +1,11 @@
 package com.csoft.muon.lib;
 
+import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.IntStream;
 
-import org.h2.tools.Server;
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sql2o.Connection;
@@ -18,6 +21,11 @@ public class Dao {
     public Dao(String url, String username, String password) {
         LOGGER.info("Connecting to database [url='{}']...", url);
         dao = new Sql2o(url, username, password);
+    }
+    
+    public Dao(DataSource ds) {
+        LOGGER.info("Connecting to database [ds='{}']...", ds);
+        dao = new Sql2o(ds);
     }
 
     public List<Item> fetchAllItems() {
@@ -36,12 +44,21 @@ public class Dao {
         }
     }
     
+    public void flushTable() {
+        LOGGER.warn("Flushing table...");
+        String sql = "TRUNCATE TABLE items";
+        try(Connection conn = dao.open()) {
+            conn.createQuery(sql)
+            .executeUpdate();
+        }
+    }
+    
     public void prepareDb() {
         LOGGER.info("Preparing MainSchema...");
-        String sql = "CREATE TABLE items (\n"
-                + "index    INT NOT NULL IDENTITY PRIMARY KEY,\n"
-                + "label    VARCHAR(255) NOT NULL\n"
-                + ")";
+        String sql = "CREATE TABLE items "
+                + "(index INTEGER not NULL,"
+                + " label VARCHAR(255),"
+                + " PRIMARY KEY ( index ))";
         Connection conn = dao.open();
         try {
             conn.createQuery(sql)
@@ -53,6 +70,20 @@ public class Dao {
                 .executeUpdate();
         }
         conn.close();
+    }
+
+    // TODO convert in a test with mock db
+    public static void main(String...args) throws SQLException {
+        
+        DataSource ds = DataSourceFactory.getPostgresHikariCPDataSource();
+        Dao dao = new Dao(ds);
+        dao.prepareDb();
+        
+        IntStream.range(0, 100).forEach(
+            x -> dao.insertItem(new Item(x+1, "prova" +x))
+        );
+        List<Item> list = dao.fetchAllItems();
+        list.forEach(item -> LOGGER.info("Found item [index {}, label {}]", item.getIndex(), item.getLabel()));
     }
 
 }
