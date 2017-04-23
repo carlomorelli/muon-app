@@ -75,7 +75,7 @@ public class Dao {
     // TODO convert in a test with mock db
     public static void main(String...args) throws SQLException {
         
-        DataSource ds = DataSourceFactory.getPostgresHikariCPDataSource();
+        DataSource ds = DataSourceFactory.getH2DataSource();
         Dao dao = new Dao(ds);
         dao.prepareDb();
         
