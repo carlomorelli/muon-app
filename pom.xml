@@ -10,6 +10,7 @@
   <properties>
     <java.version>1.8</java.version>
     <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
+    <maven-surefire-plugin.version>2.20</maven-surefire-plugin.version>
     <slf4j.version>1.7.21</slf4j.version>
     <sparkjava.version>2.5</sparkjava.version>
     <restassured.version>3.0.1</restassured.version>
@@ -105,6 +106,16 @@
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+        <configuration>
+          <suiteXmlFiles>
+            <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
+          </suiteXmlFiles>
         </configuration>
       </plugin>
     </plugins>
