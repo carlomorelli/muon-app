@@ -1,28 +1,27 @@
 package com.csoft.muon.utils;
 
 import java.util.Random;
+import java.util.stream.IntStream;
 
 import com.csoft.muon.domain.Item;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 public class RandomUtils {
 
-    public static JsonObject getRandomBody(int index) {
-        JsonObject item = new JsonObject();
-        item.addProperty("id", index);
-        item.addProperty("label", "item" + index);
-        JsonArray array = new JsonArray();
-        for (int i = 0; i < 5; i++) {
-            array.add((new Random()).nextInt());
-        }
-        item.add("array", array);
-        return item;
-    }
+    private static final String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     
     public static Item getRandomItem(int index) {
         String label = "label-" + index;
         return new Item(index, label);
+    }
+    
+    public static String getRandomString(int length) {
+        StringBuilder salt = new StringBuilder();
+        Random rnd = new Random();
+        while (salt.length() < length) {
+            int index = rnd.nextInt() * CHARS.length();
+            salt.append(CHARS.charAt(index));
+        }
+        return salt.toString();
     }
 
 }
