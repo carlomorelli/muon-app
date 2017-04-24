@@ -13,9 +13,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.csoft.muon.SimpleServer;
-import com.csoft.muon.lib.RestUtils;
 import com.csoft.muon.repository.Repository;
 import com.csoft.muon.repository.RepositoryImpl;
+import com.csoft.muon.utils.RandomUtils;
 
 import io.restassured.http.ContentType;
 
@@ -74,7 +74,7 @@ public class RestApiTest {
     public void testPostItem() {
         given()
             .contentType(ContentType.JSON)
-            .body(RestUtils.getRandomBody(3).toString())
+            .body(RandomUtils.getRandomBody(3).toString())
             .when()
             .post("/webapi/items")
             .then()

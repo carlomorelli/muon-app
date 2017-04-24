@@ -1,11 +1,12 @@
-package com.csoft.muon.lib;
+package com.csoft.muon.utils;
 
 import java.util.Random;
 
+import com.csoft.muon.domain.Item;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-public class RestUtils {
+public class RandomUtils {
 
     public static JsonObject getRandomBody(int index) {
         JsonObject item = new JsonObject();

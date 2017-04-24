@@ -1,4 +1,4 @@
-package com.csoft.muon.lib;
+package com.csoft.muon.domain;
 
 import java.util.List;
 import java.util.Objects;

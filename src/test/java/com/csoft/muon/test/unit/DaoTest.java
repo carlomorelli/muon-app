@@ -16,9 +16,9 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.csoft.muon.lib.Dao;
-import com.csoft.muon.lib.DataSourceFactory;
-import com.csoft.muon.lib.Item;
+import com.csoft.muon.dao.Dao;
+import com.csoft.muon.dao.DataSourceFactory;
+import com.csoft.muon.domain.Item;
 
 public class DaoTest {
 

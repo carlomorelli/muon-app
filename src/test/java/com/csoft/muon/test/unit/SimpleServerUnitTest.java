@@ -10,7 +10,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.csoft.muon.SimpleServer;
-import com.csoft.muon.lib.Item;
+import com.csoft.muon.domain.Item;
 import com.csoft.muon.repository.Repository;
 
 public class SimpleServerUnitTest {

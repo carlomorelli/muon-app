@@ -1,4 +1,4 @@
-package com.csoft.muon.lib;
+package com.csoft.muon.dao;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
+
+import com.csoft.muon.domain.Item;
 
 public class Dao {
 

@@ -9,8 +9,8 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.csoft.muon.lib.Dao;
-import com.csoft.muon.lib.Item;
+import com.csoft.muon.dao.Dao;
+import com.csoft.muon.domain.Item;
 
 public class DaoTest {
 

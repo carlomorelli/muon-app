@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.csoft.muon.lib.Item;
-import com.csoft.muon.lib.RestUtils;
+import com.csoft.muon.domain.Item;
 import com.csoft.muon.repository.Repository;
 import com.csoft.muon.repository.RepositoryImpl;
+import com.csoft.muon.utils.RandomUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -37,8 +37,8 @@ public class SimpleServer {
     private Map<Integer, Item> inMemoryDb;
 
     // some sample data as init database
-    private Item product1 = RestUtils.getRandomItem(1);
-    private Item product2 = RestUtils.getRandomItem(2);
+    private Item product1 = RandomUtils.getRandomItem(1);
+    private Item product2 = RandomUtils.getRandomItem(2);
 
     private ObjectMapper mapper = new ObjectMapper();
     

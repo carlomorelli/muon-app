@@ -2,7 +2,7 @@ package com.csoft.muon.repository;
 
 import java.util.Map;
 
-import com.csoft.muon.lib.Item;
+import com.csoft.muon.domain.Item;
 
 public class RepositoryImpl implements Repository {
 
