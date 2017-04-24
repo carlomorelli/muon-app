@@ -2,8 +2,8 @@ package com.csoft.muon.test.unit;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -17,6 +17,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import com.csoft.muon.dao.Dao;
+import com.csoft.muon.dao.DaoException;
 import com.csoft.muon.dao.DataSourceFactory;
 import com.csoft.muon.domain.Item;
 
@@ -76,16 +77,11 @@ public class DaoTest {
         assertThat(list.size(), equalTo(N));
     }
     
-    //TODO fix
-    @Test(expectedExceptions = Sql2oException.class)
+    @Test(expectedExceptions = DaoException.class)
     public void testNegativeIndexNotAllowed() {
         final Item item = new Item(-1, "negativeTest");
         dao.insertItem(item);
         List<Item> list = dao.fetchAllItems();
-        System.out.println("size = " + list.size());
-        System.out.println(list.get(0).getIndex());
-        System.out.println(list.get(0).getLabel());
-        System.out.println(list.get(0).getArray());
         assertThat(list.size(), equalTo(0));
     }
 

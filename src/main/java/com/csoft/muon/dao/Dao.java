@@ -37,9 +37,15 @@ public class Dao {
         }
     }
 
-    public void insertItem(Item item) {
+    public void insertItem(Item item) throws DaoException {
+        if (item.getIndex() == null) {
+            throw new DaoException("Forbidden: Index is null");
+        }
+        if (item.getIndex() <= 0) {
+            throw new DaoException("Forbidden: Index must be strictly positive");
+        }
         String sql = "INSERT INTO items(index, label) VALUES (:index,:label)";
-        try(Connection conn = dao.open()) {
+        try (Connection conn = dao.open()) {
             conn.createQuery(sql)
                 .bind(item)
                 .executeUpdate();
