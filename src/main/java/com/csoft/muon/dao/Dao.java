@@ -55,9 +55,9 @@ public class Dao {
     public void flushTable() {
         LOGGER.warn("Flushing table...");
         String sql = "TRUNCATE TABLE items";
-        try(Connection conn = dao.open()) {
+        try (Connection conn = dao.open()) {
             conn.createQuery(sql)
-            .executeUpdate();
+                .executeUpdate();
         }
     }
     

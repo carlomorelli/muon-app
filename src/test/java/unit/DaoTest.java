@@ -37,6 +37,7 @@ public class DaoTest {
     public void setup() {
         // create a new Dao for every test
         dao = new Dao(ds);
+        dao.prepareDb();
     }
 
     @AfterMethod
