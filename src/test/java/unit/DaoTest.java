@@ -1,4 +1,4 @@
-package com.csoft.muon.test.unit;
+package unit;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;

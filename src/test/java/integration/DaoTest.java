@@ -1,4 +1,4 @@
-package com.csoft.muon.test.integration;
+package integration;
 
 import java.sql.SQLException;
 

@@ -3,9 +3,13 @@
 
 <suite name="RegressionSuite">
 
+  <listeners>
+    <listener class-name="listener.TestListener"/>
+  </listeners>
+  
   <test name="UnitTest">
     <packages>
-        <package name="com.csoft.muon.test.unit.*"/>
+        <package name="unit.*"/>
     </packages>
   </test>
   

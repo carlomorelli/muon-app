@@ -1,4 +1,4 @@
-package com.csoft.muon.test.unit;
+package unit;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
