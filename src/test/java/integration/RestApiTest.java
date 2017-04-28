@@ -1,10 +1,12 @@
-package com.csoft.muon.test.integration;
+package integration;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasSize;
+
+import java.io.IOException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,19 +15,25 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.csoft.muon.SimpleServer;
-import com.csoft.muon.lib.RestUtils;
+import com.csoft.muon.domain.Item;
+import com.csoft.muon.repository.Repository;
+import com.csoft.muon.repository.RepositoryImpl;
+import com.csoft.muon.utils.RandomUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.restassured.http.ContentType;
 
 public class RestApiTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleServer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestApiTest.class);
 
+    private final ObjectMapper mapper = new ObjectMapper();
     private SimpleServer server;
+    
 
     @BeforeClass
     public void setupClass() {
-        server = new SimpleServer();
+        server = new SimpleServer(new RepositoryImpl());
         LOGGER.info("Starting SimpleServer...");
         server.startServer();
     }
@@ -69,10 +77,12 @@ public class RestApiTest {
     }
 
     @Test
-    public void testPostItem() {
+    public void testPostItem() throws IOException {
+        Item item = RandomUtils.getRandomItem(3);
+        String body = mapper.writeValueAsString(item);
         given()
             .contentType(ContentType.JSON)
-            .body(RestUtils.getRandomBody(3).toString())
+            .body(body)
             .when()
             .post("/webapi/items")
             .then()

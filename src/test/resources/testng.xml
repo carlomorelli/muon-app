@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="RegressionSuite">
+
+  <listeners>
+    <listener class-name="listener.TestListener"/>
+  </listeners>
+  
+  <test name="UnitTest">
+    <packages>
+        <package name="unit.*"/>
+    </packages>
+  </test>
+  
+</suite>
