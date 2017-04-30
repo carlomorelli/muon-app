@@ -64,12 +64,12 @@ public class Dao {
     }
     
     public Item fetchItemAtIndex(int index) throws DaoException {
-        String sql = "SELECT items WHERE (index) IS (:index)";
+        String sql = "SELECT * FROM items WHERE (index) IS (:index)";
         try (Connection conn = sql2o.open()) {
             List<Item> list = conn.createQuery(sql)
                 .addParameter("index", index)
                 .executeAndFetch(Item.class);
-            if (list == null) {
+            if (list == null || list.isEmpty()) {
                 throw new DaoException("Item with given index cannot be retrieved");
             }
             if (list.size() > 1) {

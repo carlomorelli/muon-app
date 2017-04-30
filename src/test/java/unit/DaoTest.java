@@ -117,7 +117,7 @@ public class DaoTest {
         assertThat(dao.fetchAllItems(), contains(item2));
     }
 
-    @Test //(expectedExceptions = DaoException.class)
+    @Test(expectedExceptions = DaoException.class)
     public void testShouldNotUpdateItem_whenIndexIsNotUsed() throws DaoException {
         final Item item1 = new Item(123, "originalData");
         final Item item2 = new Item(124, "nowIChangedSomeData");
