@@ -1,8 +1,6 @@
 package com.csoft.muon.dao;
 
-import java.sql.SQLException;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import javax.sql.DataSource;
 
