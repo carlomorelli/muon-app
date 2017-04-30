@@ -39,9 +39,13 @@ public class Dao {
         }
         String sql = "INSERT INTO items(index, label) VALUES (:index,:label)";
         try (Connection conn = sql2o.open()) {
-            conn.createQuery(sql)
+            try {
+                conn.createQuery(sql)
                 .bind(item)
                 .executeUpdate();
+            } catch (Sql2oException e) {
+                throw new DaoException("Forbidden: Index is already under use", e);
+            }
         }
     }
 
@@ -54,7 +58,12 @@ public class Dao {
                 .executeUpdate();
         }
     }
-    public void deleteItemAtIndex(int index) {
+    public void deleteItemAtIndex(int index) throws DaoException {
+        try {
+            fetchItemAtIndex(index);
+        } catch (DaoException e) {
+            throw new DaoException("Forbidden: Index is not existing");
+        }
         String sql = "DELETE FROM items WHERE (index) IS (:index)";
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql)

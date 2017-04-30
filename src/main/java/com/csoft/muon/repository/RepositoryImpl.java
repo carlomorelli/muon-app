@@ -48,11 +48,10 @@ public class RepositoryImpl implements Repository {
     @Override
     public void delete(int index) throws RepositoryException {
         try {
-            dao.fetchItemAtIndex(index);
+            dao.deleteItemAtIndex(index);
         } catch (DaoException e) {
             throw new RepositoryException("Unable to delete item: unable to find item at given index");
         } 
-        dao.deleteItemAtIndex(index);
     }
 
 }

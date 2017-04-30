@@ -10,7 +10,6 @@ import java.util.stream.IntStream;
 
 import javax.sql.DataSource;
 
-import org.sql2o.Sql2oException;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -59,7 +58,7 @@ public class DaoTest {
         assertThat(dao.fetchAllItems(), contains(item));
     }
     
-    @Test(expectedExceptions = Sql2oException.class)
+    @Test(expectedExceptions = DaoException.class)
     public void testShouldNotPersistItem_whenIndexIsAlreadyUsed() throws DaoException {
         final Item item1 = new Item(12345, "firstItem");
         final Item item2 = new Item(12345, "secondItem");
@@ -90,7 +89,7 @@ public class DaoTest {
     }
 
     @Test
-    public void testShouldPersistMultipleItems() throws DaoException {
+    public void testShouldPersistMultipleItems() {
         final int N = 100;
         IntStream.range(0, N).forEach(
                 x -> {
@@ -129,5 +128,22 @@ public class DaoTest {
         assertThat(dao.fetchAllItems(), not(contains(item2)));
     }
 
+    @Test
+    public void testShouldDeleteItem() throws DaoException {
+        final Item item = new Item(7589, "data");
+        dao.insertItem(item);
+        assertThat(dao.fetchAllItems(), contains(item));
+        dao.deleteItemAtIndex(item.getIndex());
+        assertThat(dao.fetchAllItems(), not(contains(item)));
+    }
+
+    @Test(expectedExceptions = DaoException.class)
+    public void testShouldNotDeleteItem_whenIndexIsNotUsed() throws DaoException {
+        final Item item = new Item(7589, "data");
+        dao.insertItem(item);
+        assertThat(dao.fetchAllItems(), contains(item));
+        dao.deleteItemAtIndex(item.getIndex() + 1);
+        assertThat(dao.fetchAllItems(), contains(item));
+    }
 
 }
