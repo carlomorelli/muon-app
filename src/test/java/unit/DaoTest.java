@@ -14,6 +14,7 @@ import org.sql2o.Sql2oException;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.csoft.muon.dao.Dao;
@@ -59,7 +60,7 @@ public class DaoTest {
     }
     
     @Test(expectedExceptions = Sql2oException.class)
-    public void testShouldAvoidIndexDuplication() throws DaoException {
+    public void testShouldNotPersistItem_whenIndexIsAlreadyUsed() throws DaoException {
         final Item item1 = new Item(12345, "firstItem");
         final Item item2 = new Item(12345, "secondItem");
         dao.insertItem(item1);
@@ -67,9 +68,29 @@ public class DaoTest {
         dao.insertItem(item2);
         assertThat(dao.fetchAllItems(), not(contains(item2)));
     }
-    
+
+    @DataProvider(name = "invalidIndexData")
+    public Object[][] invalidIndexData() {
+        return new Object[][] {
+            {
+                new Item(null, "negativeTest1")
+            },
+            {
+                new Item(-1, "negativeTest2")
+            }
+        };
+    }
+
+    @Test(expectedExceptions = DaoException.class,
+            dataProvider = "invalidIndexData")
+    public void testShouldNotPersistItem_whenInvalidIndex(final Item item) throws DaoException {
+        dao.insertItem(item);
+        List<Item> list = dao.fetchAllItems();
+        assertThat(list.size(), equalTo(0));
+    }
+
     @Test
-    public void testShouldPersisteMultipleItems() throws DaoException {
+    public void testShouldPersistMultipleItems() throws DaoException {
         final int N = 100;
         IntStream.range(0, N).forEach(
                 x -> {
@@ -83,13 +104,30 @@ public class DaoTest {
         List<Item> list = dao.fetchAllItems();
         assertThat(list.size(), equalTo(N));
     }
-    
-    @Test(expectedExceptions = DaoException.class)
-    public void testNegativeIndexNotAllowed() throws DaoException {
-        final Item item = new Item(-1, "negativeTest");
-        dao.insertItem(item);
-        List<Item> list = dao.fetchAllItems();
-        assertThat(list.size(), equalTo(0));
+
+    @Test
+    public void testShouldUpdateItem() throws DaoException {
+        final Item item1 = new Item(123, "originalData");
+        final Item item2 = new Item(123, "nowIChangedSomeData");
+        dao.insertItem(item1);
+        assertThat(dao.fetchAllItems(), contains(item1));
+        assertThat(dao.fetchAllItems(), not(contains(item2)));
+        dao.updateItem(item2);
+        assertThat(dao.fetchAllItems(), not(contains(item1)));
+        assertThat(dao.fetchAllItems(), contains(item2));
     }
+
+    @Test //(expectedExceptions = DaoException.class)
+    public void testShouldNotUpdateItem_whenIndexIsNotUsed() throws DaoException {
+        final Item item1 = new Item(123, "originalData");
+        final Item item2 = new Item(124, "nowIChangedSomeData");
+        dao.insertItem(item1);
+        assertThat(dao.fetchAllItems(), contains(item1));
+        assertThat(dao.fetchAllItems(), not(contains(item2)));
+        dao.updateItem(item2);
+        assertThat(dao.fetchAllItems(), contains(item1));
+        assertThat(dao.fetchAllItems(), not(contains(item2)));
+    }
+
 
 }
