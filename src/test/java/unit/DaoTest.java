@@ -46,20 +46,20 @@ public class DaoTest {
     }
     
     @Test
-    public void testShouldInsertItem() {
+    public void testShouldInsertItem() throws DaoException {
         final Item item = new Item(456, "asdaiwdjawidj");
         dao.insertItem(item);
     }
     
     @Test
-    public void testShouldPersistItem() {
+    public void testShouldPersistItem() throws DaoException {
         final Item item = new Item(123, "test");
         dao.insertItem(item);
         assertThat(dao.fetchAllItems(), contains(item));
     }
     
     @Test(expectedExceptions = Sql2oException.class)
-    public void testShouldAvoidIndexDuplication() {
+    public void testShouldAvoidIndexDuplication() throws DaoException {
         final Item item1 = new Item(12345, "firstItem");
         final Item item2 = new Item(12345, "secondItem");
         dao.insertItem(item1);
@@ -69,22 +69,27 @@ public class DaoTest {
     }
     
     @Test
-    public void testShouldPersisteMultipleItems() {
+    public void testShouldPersisteMultipleItems() throws DaoException {
         final int N = 100;
         IntStream.range(0, N).forEach(
-                x -> dao.insertItem(new Item(x+1, "prova" +x))
+                x -> {
+                    try {
+                        dao.insertItem(new Item(x+1, "prova" +x));
+                    } catch (DaoException e) {
+                        throw new RuntimeException("Error inserting item!", e);
+                    }
+                }
         );
         List<Item> list = dao.fetchAllItems();
         assertThat(list.size(), equalTo(N));
     }
     
     @Test(expectedExceptions = DaoException.class)
-    public void testNegativeIndexNotAllowed() {
+    public void testNegativeIndexNotAllowed() throws DaoException {
         final Item item = new Item(-1, "negativeTest");
         dao.insertItem(item);
         List<Item> list = dao.fetchAllItems();
         assertThat(list.size(), equalTo(0));
     }
 
-    
 }

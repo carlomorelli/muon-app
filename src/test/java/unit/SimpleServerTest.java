@@ -12,10 +12,11 @@ import org.testng.annotations.Test;
 import com.csoft.muon.SimpleServer;
 import com.csoft.muon.domain.Item;
 import com.csoft.muon.repository.Repository;
+import com.csoft.muon.repository.RepositoryException;
 
-public class SimpleServerUnitTest {
+public class SimpleServerTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleServerUnitTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleServerTest.class);
 
     private Repository mockRepository;
     private SimpleServer server;
@@ -31,13 +32,13 @@ public class SimpleServerUnitTest {
     
     @SuppressWarnings("unchecked")
     @Test(expectedExceptions = IndexOutOfBoundsException.class)
-    public void testGetIndexWithEmpty() {
+    public void testGetIndexWithEmpty() throws RepositoryException {
         when(mockRepository.get(0)).thenThrow(IndexOutOfBoundsException.class);
         mockRepository.get(0);
     }
     
     @Test
-    public void testGetIndexWithOrderedNonEmpty() {
+    public void testGetIndexWithOrderedNonEmpty() throws RepositoryException {
         when(mockRepository.get(0)).thenReturn(testItem0);
         when(mockRepository.get(1)).thenReturn(testItem1);
         when(mockRepository.get(2)).thenReturn(testItem2);
@@ -55,7 +56,7 @@ public class SimpleServerUnitTest {
     
     @SuppressWarnings("unchecked")
     @Test(expectedExceptions = IndexOutOfBoundsException.class)
-    public void testGetIndexOutOfBounds() {
+    public void testGetIndexOutOfBounds() throws RepositoryException {
         when(mockRepository.get(0)).thenReturn(testItem0);
         when(mockRepository.get(1)).thenThrow(IndexOutOfBoundsException.class);
         mockRepository.append(testItem0);

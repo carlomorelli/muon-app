@@ -6,14 +6,14 @@ import com.csoft.muon.domain.Item;
 
 public interface Repository {
 
-    Item get(int index);
+    Item get(int index) throws RepositoryException;
     
     Map<Integer, Item> getAll();
     
-    void append(Item item);
+    void append(Item item) throws RepositoryException;
     
-    void update(Item item, int index);
+    void update(Item item, int index) throws RepositoryException;
     
-    void delete(int index);
+    void delete(int index) throws RepositoryException;
     
 }

@@ -10,7 +10,10 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.csoft.muon.dao.Dao;
+import com.csoft.muon.dao.DaoException;
 import com.csoft.muon.domain.Item;
+
+import static com.csoft.muon.dao.DataSourceFactory.getH2DataSource;
 
 public class DaoTest {
 
@@ -38,16 +41,20 @@ public class DaoTest {
     
     @Test
     public void testItemInsert() {
-        Dao db = new Dao("jdbc:h2:./test.db", "sa", "");
+        Dao db = new Dao(getH2DataSource());
         db.prepareDb();
         Item myItem = new Item(1, "label");
-        db.insertItem(myItem);
+        try {
+            db.insertItem(myItem);
+        } catch (DaoException e) {
+            throw new RuntimeException("Unable to insert", e);
+        }
     }
     
     
     @Test
     public void testItemFetchAll() {
-        Dao db = new Dao("jdbc:h2:./test.db", "sa", "");
+        Dao db = new Dao(getH2DataSource());
         db.prepareDb();
         
     }

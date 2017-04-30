@@ -18,21 +18,16 @@ public class Dao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Dao.class);
 
-    private Sql2o dao;
-    
-    public Dao(String url, String username, String password) {
-        LOGGER.info("Connecting to database [url='{}']...", url);
-        dao = new Sql2o(url, username, password);
-    }
-    
+    private Sql2o sql2o;
+        
     public Dao(DataSource ds) {
         LOGGER.info("Connecting to database [ds='{}']...", ds);
-        dao = new Sql2o(ds);
+        sql2o = new Sql2o(ds);
     }
 
     public List<Item> fetchAllItems() {
         String sql = "SELECT * FROM items";
-        try(Connection conn = dao.open()) {
+        try(Connection conn = sql2o.open()) {
             return conn.createQuery(sql).executeAndFetch(Item.class);
         }
     }
@@ -45,17 +40,52 @@ public class Dao {
             throw new DaoException("Forbidden: Index must be strictly positive");
         }
         String sql = "INSERT INTO items(index, label) VALUES (:index,:label)";
-        try (Connection conn = dao.open()) {
+        try (Connection conn = sql2o.open()) {
             conn.createQuery(sql)
                 .bind(item)
                 .executeUpdate();
+        }
+    }
+
+    public void updateItem(Item item) throws DaoException {
+        fetchItemAtIndex(item.getIndex());
+        String sql = "UPDATE items SET label=:label WHERE index=:index";
+        try (Connection conn = sql2o.open()) {
+            conn.createQuery(sql)
+                .bind(item)
+                .executeUpdate();
+        }
+    }
+    public void deleteItemAtIndex(int index) {
+        String sql = "DELETE FROM items WHERE (index) IS (:index)";
+        try (Connection conn = sql2o.open()) {
+            conn.createQuery(sql)
+                .addParameter("index", index)
+                .executeUpdate();
+        }
+    }
+    
+    public Item fetchItemAtIndex(int index) throws DaoException {
+        String sql = "SELECT items WHERE (index) IS (:index)";
+        try (Connection conn = sql2o.open()) {
+            List<Item> list = conn.createQuery(sql)
+                .addParameter("index", index)
+                .executeAndFetch(Item.class);
+            if (list == null) {
+                throw new DaoException("Item with given index cannot be retrieved");
+            }
+            if (list.size() > 1) {
+                // should be impossible if index is the primary key
+                throw new DaoException("Inconsistency in db, found two items with given index");
+            }
+            return list.get(0);
         }
     }
     
     public void flushTable() {
         LOGGER.warn("Flushing table...");
         String sql = "TRUNCATE TABLE items";
-        try (Connection conn = dao.open()) {
+        try (Connection conn = sql2o.open()) {
             conn.createQuery(sql)
                 .executeUpdate();
         }
@@ -67,7 +97,7 @@ public class Dao {
                 + "(index INTEGER not NULL,"
                 + " label VARCHAR(255),"
                 + " PRIMARY KEY ( index ))";
-        Connection conn = dao.open();
+        Connection conn = sql2o.open();
         try {
             conn.createQuery(sql)
                 .executeUpdate();
@@ -78,20 +108,6 @@ public class Dao {
                 .executeUpdate();
         }
         conn.close();
-    }
-
-    // TODO convert in a test with mock db
-    public static void main(String... args) throws SQLException {
-        
-        DataSource ds = DataSourceFactory.getH2DataSource();
-        Dao dao = new Dao(ds);
-        dao.prepareDb();
-        
-        IntStream.range(0, 100).forEach(
-            x -> dao.insertItem(new Item(x+1, "prova" +x))
-        );
-        List<Item> list = dao.fetchAllItems();
-        list.forEach(item -> LOGGER.info("Found item [index {}, label {}]", item.getIndex(), item.getLabel()));
     }
 
 }
