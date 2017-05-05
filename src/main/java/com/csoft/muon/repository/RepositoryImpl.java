@@ -11,13 +11,15 @@ import org.sql2o.Sql2o;
 import org.sql2o.Sql2oException;
 
 import com.csoft.muon.domain.Item;
+import com.google.inject.Inject;
 
 public class RepositoryImpl implements Repository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryImpl.class);
 
     private Sql2o sql2o;
-        
+    
+    @Inject
     public RepositoryImpl(DataSource ds) {
         LOGGER.info("Connecting to database [ds='{}']...", ds);
         sql2o = new Sql2o(ds);

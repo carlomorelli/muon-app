@@ -20,20 +20,29 @@ import com.csoft.muon.domain.Item;
 import com.csoft.muon.repository.RepositoryException;
 import com.csoft.muon.repository.RepositoryImpl;
 import com.csoft.muon.repository.datasource.DataSourceFactory;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 public class RepositoryImplTest {
 
     //TODO missing tests on fetchAll and fetchItemAtIndex
     
-    
+    @Inject
     DataSource ds;
+    
     RepositoryImpl repo;
     
     @BeforeClass
     public void setupClass() {
-        // for testing purposes, only H2 database will be used
-        // TODO use dependency injection
-        ds = DataSourceFactory.getH2DataSource();
+        Injector injector = Guice.createInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+                bind(DataSource.class).toInstance(DataSourceFactory.getH2DataSource());
+            }
+        });
+        ds = injector.getInstance(DataSource.class);
     }
     
     @BeforeMethod
