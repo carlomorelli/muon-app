@@ -1,5 +1,7 @@
 package integration;
 
+import static com.csoft.muon.repository.datasource.DataSourceFactory.getH2DataSource;
+
 import java.sql.SQLException;
 
 import org.h2.tools.Server;
@@ -9,11 +11,9 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.csoft.muon.dao.Dao;
-import com.csoft.muon.dao.DaoException;
 import com.csoft.muon.domain.Item;
-
-import static com.csoft.muon.dao.DataSourceFactory.getH2DataSource;
+import com.csoft.muon.repository.RepositoryException;
+import com.csoft.muon.repository.RepositoryImpl;
 
 public class DaoTest {
 
@@ -41,12 +41,12 @@ public class DaoTest {
     
     @Test
     public void testItemInsert() {
-        Dao db = new Dao(getH2DataSource());
+        RepositoryImpl db = new RepositoryImpl(getH2DataSource());
         db.prepareDb();
         Item myItem = new Item(1, "label");
         try {
             db.insertItem(myItem);
-        } catch (DaoException e) {
+        } catch (RepositoryException e) {
             throw new RuntimeException("Unable to insert", e);
         }
     }
@@ -54,7 +54,7 @@ public class DaoTest {
     
     @Test
     public void testItemFetchAll() {
-        Dao db = new Dao(getH2DataSource());
+        RepositoryImpl db = new RepositoryImpl(getH2DataSource());
         db.prepareDb();
         
     }

@@ -1,19 +1,19 @@
 package com.csoft.muon.repository;
 
-import java.util.Map;
+import java.util.List;
 
 import com.csoft.muon.domain.Item;
 
 public interface Repository {
 
-    Item get(int index) throws RepositoryException;
+    List<Item> fetchAllItems();
+
+    Item fetchItemAtIndex(int index) throws RepositoryException;
     
-    Map<Integer, Item> getAll();
-    
-    void append(Item item) throws RepositoryException;
-    
-    void update(Item item, int index) throws RepositoryException;
-    
-    void delete(int index) throws RepositoryException;
-    
+    void insertItem(Item item) throws RepositoryException;
+
+    void updateItem(Item item) throws RepositoryException;
+
+    void deleteItemAtIndex(int index) throws RepositoryException;
+
 }

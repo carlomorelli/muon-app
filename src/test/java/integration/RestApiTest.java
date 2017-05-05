@@ -18,6 +18,7 @@ import com.csoft.muon.SimpleServer;
 import com.csoft.muon.domain.Item;
 import com.csoft.muon.repository.Repository;
 import com.csoft.muon.repository.RepositoryImpl;
+import com.csoft.muon.repository.datasource.DataSourceFactory;
 import com.csoft.muon.utils.RandomUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -33,7 +34,7 @@ public class RestApiTest {
 
     @BeforeClass
     public void setupClass() {
-        server = new SimpleServer(new RepositoryImpl());
+        server = new SimpleServer(new RepositoryImpl(DataSourceFactory.getH2DataSource()));
         LOGGER.info("Starting SimpleServer...");
         server.startServer();
     }
