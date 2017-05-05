@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import com.csoft.muon.domain.Item;
 import com.csoft.muon.repository.Repository;
 import com.csoft.muon.repository.RepositoryImpl;
+import com.csoft.muon.repository.datasource.DataSourceFactory;
 import com.csoft.muon.utils.RandomUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -29,7 +30,7 @@ public class SimpleServer {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleServer.class);
 
     private final int webPort;
-    private Repository repository;
+    private Repository repo;
     
     private Map<Integer, Item> inMemoryDb;
 
@@ -39,12 +40,13 @@ public class SimpleServer {
 
     private ObjectMapper mapper = new ObjectMapper();
     
-    public SimpleServer(Repository repository) {
-        this(WEB_PORT, repository);
+    public SimpleServer(Repository repo) {
+        this(WEB_PORT, repo);
     }
 
-    public SimpleServer(int webPort, Repository repository) {
+    public SimpleServer(int webPort, Repository repo) {
         this.webPort = webPort;
+        this.repo = repo;
         inMemoryDb = new HashMap<>();
         inMemoryDb.put(product1.getIndex(), product1);
         inMemoryDb.put(product2.getIndex(), product2);
@@ -114,7 +116,7 @@ public class SimpleServer {
         if (args.length > 0) {
             webPort = Integer.parseInt(args[0]);
         }
-        SimpleServer server = new SimpleServer(webPort, new RepositoryImpl());
+        SimpleServer server = new SimpleServer(webPort, new RepositoryImpl(DataSourceFactory.getH2DataSource()));
         server.startServer();
         Thread.sleep(60000);
         server.stopServer();
