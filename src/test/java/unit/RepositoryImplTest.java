@@ -4,6 +4,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+
 
 import java.util.List;
 import java.util.stream.IntStream;
@@ -27,8 +29,6 @@ import com.google.inject.Injector;
 
 public class RepositoryImplTest {
 
-    //TODO missing tests on fetchAll and fetchItemAtIndex
-    
     @Inject
     DataSource ds;
     
@@ -116,6 +116,22 @@ public class RepositoryImplTest {
         assertThat(list.size(), equalTo(N));
     }
 
+    @Test
+    public void testShouldFetchItem() throws RepositoryException {
+        final Item item = new Item(123, "test");
+        repo.insertItem(item);
+        Item retrieved = repo.fetchItemAtIndex(123);
+        assertThat(retrieved, not(nullValue()));
+        assertThat(retrieved.getIndex(), equalTo(123));
+        assertThat(retrieved.getLabel(), equalTo("test"));
+    }
+    
+    @Test(expectedExceptions = RepositoryException.class)
+    public void testShouldNotFetchItem_whenIndexIsNotUsed() throws RepositoryException {
+        Item retrieved = repo.fetchItemAtIndex(2342);
+        assertThat(retrieved, nullValue());
+    }
+    
     @Test
     public void testShouldUpdateItem() throws RepositoryException {
         final Item item1 = new Item(123, "originalData");
