@@ -14,7 +14,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.csoft.muon.SimpleServer;
+import com.csoft.muon.App;
 import com.csoft.muon.domain.Item;
 import com.csoft.muon.repository.Repository;
 import com.csoft.muon.repository.RepositoryImpl;
@@ -29,12 +29,12 @@ public class RestApiTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(RestApiTest.class);
 
     private final ObjectMapper mapper = new ObjectMapper();
-    private SimpleServer server;
+    private App server;
     
 
     @BeforeClass
     public void setupClass() {
-        server = new SimpleServer(new RepositoryImpl(DataSourceFactory.getH2DataSource()));
+        server = new App(new RepositoryImpl(DataSourceFactory.getH2DataSource()));
         LOGGER.info("Starting SimpleServer...");
         server.startServer();
     }

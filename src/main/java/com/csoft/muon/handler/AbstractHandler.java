@@ -11,6 +11,11 @@ import spark.Request;
 import spark.Response;
 import spark.Route;
 
+/**
+ * Abstract base class for Route actions
+ * @author Carlo Morelli
+ *
+ */
 public abstract class AbstractHandler implements Route {
 
     private ObjectMapper mapper;

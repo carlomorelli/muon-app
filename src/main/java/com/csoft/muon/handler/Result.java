@@ -1,5 +1,10 @@
 package com.csoft.muon.handler;
 
+/**
+ * Value object class for possible results of {@link AbstractHandler#process} call
+ * @author Carlo Morelli
+ *
+ */
 public class Result {
 
     private int status;

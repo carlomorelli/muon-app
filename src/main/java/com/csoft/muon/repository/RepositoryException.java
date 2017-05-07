@@ -1,5 +1,10 @@
 package com.csoft.muon.repository;
 
+/**
+ * Repository exception for error handling in Repository interface operations
+ * @author Carlo Morelli
+ *
+ */
 public class RepositoryException extends Exception {
 
     private static final long serialVersionUID = 1L;

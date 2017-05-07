@@ -10,6 +10,12 @@ import org.slf4j.LoggerFactory;
 import com.csoft.muon.domain.Item;
 import com.csoft.muon.repository.Repository;
 
+/**
+ * Final class implementing the GetList action
+ * The process() method does not require either a valid Item in input, nor a valid params map
+ * @author Carlo Morelli
+ *
+ */
 public final class GetListHandler extends AbstractHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractHandler.class);

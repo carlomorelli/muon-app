@@ -13,6 +13,13 @@ import org.sql2o.Sql2oException;
 import com.csoft.muon.domain.Item;
 import com.google.inject.Inject;
 
+/**
+ * Repository implementation using database as storage backend
+ * Database is configured by dependency injection of DataSource object
+ * Exception {@link RepositoryException} is used to handle errors
+ * @author Carlo Morelli
+ *
+ */
 public class RepositoryImpl implements Repository {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryImpl.class);

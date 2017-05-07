@@ -16,21 +16,26 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
-public class SimpleServer {
+/**
+ * Frontend web application
+ * @author Carlo Morelli
+ *
+ */
+public class App {
 
     private static final int WEB_PORT = 8080;
-    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleServer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
 
     private final int webPort;
     private final Repository repo;
     
     @Inject
-    public SimpleServer(Repository repo) {
+    public App(Repository repo) {
         this(WEB_PORT, repo);
     }
 
     @Inject
-    public SimpleServer(int webPort, Repository repo) {
+    public App(int webPort, Repository repo) {
         this.webPort = webPort;
         this.repo = repo;
     }
@@ -59,7 +64,7 @@ public class SimpleServer {
             webPort = Integer.parseInt(args[0]);
         }
         
-        SimpleServer server = new SimpleServer(webPort, repo);
+        App server = new App(webPort, repo);
         server.startServer();
         Thread.sleep(60000);
         server.stopServer();

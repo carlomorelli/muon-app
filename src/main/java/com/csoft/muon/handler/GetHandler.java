@@ -10,6 +10,12 @@ import com.csoft.muon.domain.Item;
 import com.csoft.muon.repository.Repository;
 import com.csoft.muon.repository.RepositoryException;
 
+/**
+ * Final class implementing the Get action
+ * The process() method does not require a valid Item in input, but a valid params map to retrieve the index
+ * @author Carlo Morelli
+ *
+ */
 public final class GetHandler extends AbstractHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractHandler.class);

@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.csoft.muon.SimpleServer;
+import com.csoft.muon.App;
 import com.csoft.muon.domain.Item;
 import com.csoft.muon.repository.Repository;
 import com.csoft.muon.repository.RepositoryException;
@@ -19,7 +19,7 @@ public class SimpleServerTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleServerTest.class);
 
     private Repository repo;
-    private SimpleServer server;
+    private App server;
     
     private Item testItem0 = new Item(0, "item0");
     private Item testItem1 = new Item(1, "item1");

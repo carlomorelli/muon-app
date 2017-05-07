@@ -10,6 +10,12 @@ import com.csoft.muon.domain.Item;
 import com.csoft.muon.repository.Repository;
 import com.csoft.muon.repository.RepositoryException;
 
+/**
+ * Final class implementing the Post action
+ * The process() method requires a valid Item in input
+ * @author Carlo
+ *
+ */
 public final class PostHandler extends AbstractHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractHandler.class);
