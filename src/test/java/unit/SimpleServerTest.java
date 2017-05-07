@@ -18,7 +18,7 @@ public class SimpleServerTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleServerTest.class);
 
-    private Repository mockRepository;
+    private Repository repo;
     private SimpleServer server;
     
     private Item testItem0 = new Item(0, "item0");
@@ -27,40 +27,45 @@ public class SimpleServerTest {
     
     @BeforeMethod
     public void setup() {
-        mockRepository = mock(Repository.class);
+        repo = mock(Repository.class);
     }
     
-    @SuppressWarnings("unchecked")
+    @Test
+    public void testHandleGet() throws RepositoryException {
+        when(repo.fetchItemAtIndex(1)).thenReturn(testItem1);
+        
+        
+    }
+    
     @Test(expectedExceptions = IndexOutOfBoundsException.class)
     public void testGetIndexWithEmpty() throws RepositoryException {
-        when(mockRepository.fetchItemAtIndex(0)).thenThrow(IndexOutOfBoundsException.class);
-        mockRepository.fetchItemAtIndex(0); //TODO change with SimpleServer action
+        when(repo.fetchItemAtIndex(0)).thenThrow(IndexOutOfBoundsException.class);
+        repo.fetchItemAtIndex(0); //TODO change with SimpleServer action
     }
     
     @Test
     public void testGetIndexWithOrderedNonEmpty() throws RepositoryException {
-        when(mockRepository.fetchItemAtIndex(0)).thenReturn(testItem0);
-        when(mockRepository.fetchItemAtIndex(1)).thenReturn(testItem1);
-        when(mockRepository.fetchItemAtIndex(2)).thenReturn(testItem2);
+        when(repo.fetchItemAtIndex(0)).thenReturn(testItem0);
+        when(repo.fetchItemAtIndex(1)).thenReturn(testItem1);
+        when(repo.fetchItemAtIndex(2)).thenReturn(testItem2);
         
          //TODO unit test following actions on SimpleServer not on Repository
         //server = new SimpleServer(mockRepository);
-        mockRepository.fetchItemAtIndex(0); 
-        mockRepository.fetchItemAtIndex(1);
-        mockRepository.fetchItemAtIndex(2);
-        verify(mockRepository).fetchItemAtIndex(0);
-        verify(mockRepository).fetchItemAtIndex(1);
-        verify(mockRepository).fetchItemAtIndex(2);
+        repo.fetchItemAtIndex(0); 
+        repo.fetchItemAtIndex(1);
+        repo.fetchItemAtIndex(2);
+        verify(repo).fetchItemAtIndex(0);
+        verify(repo).fetchItemAtIndex(1);
+        verify(repo).fetchItemAtIndex(2);
     }
     
-    @SuppressWarnings("unchecked")
     @Test(expectedExceptions = IndexOutOfBoundsException.class)
     public void testGetIndexOutOfBounds() throws RepositoryException {
-        when(mockRepository.fetchItemAtIndex(0)).thenReturn(testItem0);
-        when(mockRepository.fetchItemAtIndex(1)).thenThrow(IndexOutOfBoundsException.class);
-        mockRepository.insertItem(testItem0);
-        mockRepository.fetchItemAtIndex(1);
+        when(repo.fetchItemAtIndex(0)).thenReturn(testItem0);
+        when(repo.fetchItemAtIndex(1)).thenThrow(IndexOutOfBoundsException.class);
+        repo.insertItem(testItem0);
+        repo.fetchItemAtIndex(1);
         LOGGER.info("here");
-        verify(mockRepository.fetchItemAtIndex(1)); //how to verify?
+        verify(repo.fetchItemAtIndex(1)); //how to verify?
     }
 }
