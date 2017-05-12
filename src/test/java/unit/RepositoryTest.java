@@ -27,7 +27,7 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
-public class RepositoryImplTest {
+public class RepositoryTest {
 
     @Inject
     DataSource ds;

@@ -1,8 +1,16 @@
 package unit;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.util.Collections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,15 +19,16 @@ import org.testng.annotations.Test;
 
 import com.csoft.muon.App;
 import com.csoft.muon.domain.Item;
+import com.csoft.muon.handler.GetHandler;
+import com.csoft.muon.handler.Result;
 import com.csoft.muon.repository.Repository;
 import com.csoft.muon.repository.RepositoryException;
 
-public class SimpleServerTest {
+public class HandlerTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleServerTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HandlerTest.class);
 
     private Repository repo;
-    private App server;
     
     private Item testItem0 = new Item(0, "item0");
     private Item testItem1 = new Item(1, "item1");
@@ -33,8 +42,10 @@ public class SimpleServerTest {
     @Test
     public void testHandleGet() throws RepositoryException {
         when(repo.fetchItemAtIndex(1)).thenReturn(testItem1);
-        
-        
+        GetHandler handler = new GetHandler(repo);
+        Result result = handler.process(testItem1, Collections.singletonMap("index", "1"));
+        assertThat(result.getStatus(), equalTo(200));
+        verify(repo).fetchItemAtIndex(1);
     }
     
     @Test(expectedExceptions = IndexOutOfBoundsException.class)

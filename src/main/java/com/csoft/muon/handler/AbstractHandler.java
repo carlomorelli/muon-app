@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.csoft.muon.domain.Item;
 import com.csoft.muon.repository.Repository;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import spark.Request;
@@ -24,6 +25,7 @@ public abstract class AbstractHandler implements Route {
     public AbstractHandler(Repository repo) {
         this.repo = repo;
         mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
     
     public abstract Result process(Item item, Map<String, String> params);

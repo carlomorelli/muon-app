@@ -3,16 +3,23 @@ package com.csoft.muon.domain;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class Item {
 
     private Integer index;
     private String label;
     private List<Integer> array;
 
+    public Item(Integer index, String label, List<Integer> array) {
+        this.index = index;
+        this.label = label;
+        this.array = array;
+    }
+    
     public Item(Integer index, String label) {
         this.index = index;
         this.label = label;
-        this.array = null;
     }
     
     public Integer getIndex() {
@@ -27,6 +34,7 @@ public class Item {
         return array;
     }
 
+    @JsonIgnore
     public boolean isValid() {
         return index != null && !label.isEmpty() && !array.isEmpty();
     }
