@@ -8,7 +8,11 @@ public class RandomUtils {
 
     private static final String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     
-    public static Item getRandomItem(int index) {
+    public static Item nullItem() {
+        return new Item(null, null);
+    }
+
+    public static Item randomItem(int index) {
         String label = "label-" + index;
         return new Item(index, label);
     }

@@ -4,6 +4,11 @@ import java.util.List;
 
 import com.csoft.muon.domain.Item;
 
+/**
+ * Repository interface
+ * @author Carlo Morelli
+ *
+ */
 public interface Repository {
 
     List<Item> fetchAllItems();

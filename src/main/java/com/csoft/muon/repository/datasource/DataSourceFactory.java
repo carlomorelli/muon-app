@@ -8,6 +8,11 @@ import org.h2.jdbcx.JdbcDataSource;
 
 import com.zaxxer.hikari.HikariDataSource;
 
+/**
+ * Static factory to provide DataSource implementations for database access to the DI management framework
+ * @author Carlo Morelli
+ *
+ */
 public class DataSourceFactory {
 
     public static DataSource getPostgresHikariCPDataSource() throws SQLException {
