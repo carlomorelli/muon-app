@@ -9,7 +9,7 @@ public class Item {
 
     private Integer index;
     private String label;
-    private List<Integer> array;
+    private List<Integer> array; //optional
 
     public Item(Integer index, String label, List<Integer> array) {
         this.index = index;
@@ -36,7 +36,7 @@ public class Item {
 
     @JsonIgnore
     public boolean isValid() {
-        return index != null && !label.isEmpty() && !array.isEmpty();
+        return index != null && !label.isEmpty();
     }
 
     @Override

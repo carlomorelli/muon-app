@@ -1,5 +1,7 @@
 package com.csoft.muon.handler;
 
+import static com.csoft.muon.utils.RandomUtils.nullItem;
+
 import java.io.IOException;
 import java.util.Map;
 
@@ -45,11 +47,7 @@ public abstract class AbstractHandler implements Route {
         return result.getBody();
     }
     
-   
-    private static Item nullItem() {
-        return new Item(null, null);
-    }
-
+    
     protected String dumpJson(Object object) throws IOException {
         return mapper.writeValueAsString(object);
     }

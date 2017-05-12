@@ -79,7 +79,7 @@ public class RestApiTest {
 
     @Test
     public void testPostItem() throws IOException {
-        Item item = RandomUtils.getRandomItem(3);
+        Item item = RandomUtils.randomItem(3);
         String body = mapper.writeValueAsString(item);
         given()
             .contentType(ContentType.JSON)
