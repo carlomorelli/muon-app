@@ -16,8 +16,8 @@
     <maven-coveralls-plugin.version>4.3.0</maven-coveralls-plugin.version>
     <guice.version>4.1.0</guice.version>
     <slf4j.version>1.7.21</slf4j.version>
-    <sparkjava.version>2.5</sparkjava.version>
-    <jackson.version>2.8.4</jackson.version>
+    <sparkjava.version>2.6.0</sparkjava.version>
+    <jackson.version>2.8.8</jackson.version>
     <h2.version>1.4.192</h2.version>
     <sql2o.version>1.5.4</sql2o.version>
     <hikari.version>2.6.1</hikari.version>

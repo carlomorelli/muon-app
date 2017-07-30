@@ -41,7 +41,7 @@ public class HandlerTest {
     public void testGetHandler_canFetch() throws RepositoryException {
         when(repo.fetchItemAtIndex(1)).thenReturn(testItem1);
         GetHandler handler = new GetHandler(repo);
-        Result result = handler.process(null, Collections.singletonMap("index", "1"));
+        Result result = handler.process(null, Collections.singletonMap(":index", "1"));
         assertThat(result.getStatus(), equalTo(200));
         verify(repo).fetchItemAtIndex(1);
     }
@@ -50,7 +50,7 @@ public class HandlerTest {
     public void testGetHandler_cannotFetchUnexistingItem() throws RepositoryException {
         when(repo.fetchItemAtIndex(1)).thenThrow(RepositoryException.class);
         GetHandler handler = new GetHandler(repo);
-        Result result = handler.process(null, Collections.singletonMap("index", "1"));
+        Result result = handler.process(null, Collections.singletonMap(":index", "1"));
         assertThat(result.getStatus(), equalTo(404));
         verify(repo).fetchItemAtIndex(1);
     }

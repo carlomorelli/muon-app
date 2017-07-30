@@ -13,8 +13,10 @@ public class ItemsDto {
 	private Integer total;
 	private List<Item> items;
 	
+	public ItemsDto() {
+	}
+
 	public ItemsDto(Integer total, List<Item> items) {
-		super();
 		this.total = total;
 		this.items = items;
 	}

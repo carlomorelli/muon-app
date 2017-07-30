@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.csoft.muon.domain.Item;
 import com.csoft.muon.domain.ItemsDto;
 import com.csoft.muon.repository.Repository;
@@ -19,8 +16,6 @@ import com.csoft.muon.repository.Repository;
  */
 public final class GetListHandler extends AbstractHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractHandler.class);
-
     public GetListHandler(Repository repo) {
         super(repo);
     }
@@ -31,7 +26,6 @@ public final class GetListHandler extends AbstractHandler {
             List<Item> fetchedItems = repo.fetchAllItems();
             ItemsDto dto = new ItemsDto(fetchedItems.size(), fetchedItems);
             String body = dumpJson(dto);
-            LOGGER.info("Handling GET: " + body);
             return new Result(200, body);
         } catch (IOException e) {
             return new Result(503, "ServerError: unable to provide correctly item");
