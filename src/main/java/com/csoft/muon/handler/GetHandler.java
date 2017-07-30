@@ -30,7 +30,7 @@ public final class GetHandler extends AbstractHandler {
         try {
             Item fetchedItem = repo.fetchItemAtIndex(index);
             String body = dumpJson(fetchedItem);
-            LOGGER.info("Handing GET: " + body);
+            LOGGER.info("Handling GET: " + body);
             return new Result(200, body);
         } catch (RepositoryException e) {
             return new Result(404, "ClientError: requested index [" + index + "] not found");

@@ -31,7 +31,7 @@ public final class PostHandler extends AbstractHandler {
                 return new Result(403, "ClientError: required fields not available in body");
             }
             repo.insertItem(item);
-            LOGGER.info("Handing POST: " + dumpJson(item));
+            LOGGER.info("Handling POST: " + dumpJson(item));
             return new Result(200, dumpJson(item));
         } catch (RepositoryException e) {
             return new Result(403, "ClientError: invalid / null index or already used index in input item");
