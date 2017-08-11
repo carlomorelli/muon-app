@@ -4,12 +4,23 @@ import java.util.List;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+/**
+ * Main database entity
+ * @author Carlo Morelli
+ *
+ */
+@JsonInclude(Include.NON_NULL)
 public class Item {
 
     private Integer index;
     private String label;
     private List<Integer> array; //optional
+
+    public Item() {
+    }
 
     public Item(Integer index, String label, List<Integer> array) {
         this.index = index;

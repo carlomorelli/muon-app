@@ -1,6 +1,7 @@
 package unit;
 
-import static com.csoft.muon.utils.RandomUtils.randomItem;
+import static com.csoft.muon.utils.RandomFunctions.randomItem;
+import static com.csoft.muon.utils.JsonFunctions.dumpJson;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
@@ -8,7 +9,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doThrow;
 
-
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -37,11 +38,19 @@ public class HandlerTest {
         repo = mock(Repository.class);
     }
     
+    
+    @Test
+    public void testGetHandler_cannotAcceptBody() throws RepositoryException, IOException {
+        GetHandler handler = new GetHandler(repo);
+        Result result = handler.process(dumpJson(testItem2), Collections.singletonMap(":index", "1"));
+        assertThat(result.getStatus(), equalTo(400));
+    }
+    
     @Test
     public void testGetHandler_canFetch() throws RepositoryException {
         when(repo.fetchItemAtIndex(1)).thenReturn(testItem1);
         GetHandler handler = new GetHandler(repo);
-        Result result = handler.process(null, Collections.singletonMap("index", "1"));
+        Result result = handler.process(null, Collections.singletonMap(":index", "1"));
         assertThat(result.getStatus(), equalTo(200));
         verify(repo).fetchItemAtIndex(1);
     }
@@ -50,11 +59,18 @@ public class HandlerTest {
     public void testGetHandler_cannotFetchUnexistingItem() throws RepositoryException {
         when(repo.fetchItemAtIndex(1)).thenThrow(RepositoryException.class);
         GetHandler handler = new GetHandler(repo);
-        Result result = handler.process(null, Collections.singletonMap("index", "1"));
+        Result result = handler.process(null, Collections.singletonMap(":index", "1"));
         assertThat(result.getStatus(), equalTo(404));
         verify(repo).fetchItemAtIndex(1);
     }
     
+    @Test
+    public void testGetListHandler_cannotAcceptBody() throws RepositoryException, IOException {
+        GetHandler handler = new GetHandler(repo);
+        Result result = handler.process(dumpJson(testItem1), Collections.emptyMap());
+        assertThat(result.getStatus(), equalTo(400));
+    }
+
     @Test
     public void testGetListHandler_canFetchAll_withEmptyRepo() {
         when(repo.fetchAllItems()).thenReturn(Collections.emptyList());
@@ -75,18 +91,18 @@ public class HandlerTest {
     }
 
     @Test
-    public void testPostHandler_canAppend() throws RepositoryException {
+    public void testPostHandler_canAppend() throws RepositoryException, IOException {
         PostHandler handler = new PostHandler(repo);
-        Result result = handler.process(testItem2, Collections.emptyMap());
+        Result result = handler.process(dumpJson(testItem2), Collections.emptyMap());
         assertThat(result.getStatus(), equalTo(200));
         verify(repo).insertItem(testItem2);
     }
     
     @Test
-    public void testPostHandler_cannotAppend_withInvalidIndex() throws RepositoryException {
+    public void testPostHandler_cannotAppend_withInvalidIndex() throws RepositoryException, IOException {
         doThrow(RepositoryException.class).when(repo).insertItem(testItem0);
         PostHandler handler = new PostHandler(repo);
-        Result result = handler.process(testItem0, Collections.emptyMap());
+        Result result = handler.process(dumpJson(testItem0), Collections.emptyMap());
         assertThat(result.getStatus(), equalTo(403));
         verify(repo).insertItem(testItem0);
     }

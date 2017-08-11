@@ -1,12 +1,12 @@
 package com.csoft.muon.handler;
 
+import static com.csoft.muon.utils.JsonFunctions.dumpJson;
+
 import java.io.IOException;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.csoft.muon.domain.Item;
+import com.csoft.muon.events.HttpErrorEvent;
 import com.csoft.muon.repository.Repository;
 import com.csoft.muon.repository.RepositoryException;
 
@@ -18,24 +18,24 @@ import com.csoft.muon.repository.RepositoryException;
  */
 public final class GetHandler extends AbstractHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractHandler.class);
-
     public GetHandler(Repository repo) {
         super(repo);
     }
 
     @Override
-    public Result process(Item item, Map<String, String> params) {
-        int index = Integer.parseInt(params.get("index"));
+    public Result process(String requestBody, Map<String, String> requestParams) {
+    	if (requestBody != null && !requestBody.isEmpty()) {
+        	return HttpErrorEvent.SC_400_FORBIDDEN_BODY.asResult();
+    	}
+    	int index = Integer.parseInt(requestParams.get(":index"));
         try {
             Item fetchedItem = repo.fetchItemAtIndex(index);
             String body = dumpJson(fetchedItem);
-            LOGGER.info("Handing GET: " + body);
             return new Result(200, body);
         } catch (RepositoryException e) {
-            return new Result(404, "ClientError: requested index [" + index + "] not found");
+            return HttpErrorEvent.SC_404_NOT_FOUND.asResult();
         } catch (IOException e) {
-            return new Result(503, "ServerError: unable to provide correctly item");
+            return HttpErrorEvent.SC_503_ERROR_CREATING_RETURN_BODY.asResult();
         }
     }
 

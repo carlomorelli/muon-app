@@ -10,6 +10,7 @@ import com.google.inject.AbstractModule;
 /**
  * Runtime application configuration using Google Guice
  * @author Carlo Morelli
+ * 
  */
 public class AppConfig extends AbstractModule {
 

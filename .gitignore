@@ -4,4 +4,6 @@
 .project
 .settings/
 .vscode/
+**/.idea/
+*.iml
 *.db

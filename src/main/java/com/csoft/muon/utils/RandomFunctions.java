@@ -4,7 +4,12 @@ import java.util.Random;
 
 import com.csoft.muon.domain.Item;
 
-public class RandomUtils {
+/**
+ * Random utilities for main and test code
+ * @author Carlo Morelli
+ * 
+ */
+public class RandomFunctions {
 
     private static final String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     
@@ -17,11 +22,11 @@ public class RandomUtils {
         return new Item(index, label);
     }
     
-    public static String getRandomString(int length) {
+    public static String randomString(int length) {
         StringBuilder salt = new StringBuilder();
         Random rnd = new Random();
         while (salt.length() < length) {
-            int index = rnd.nextInt() * CHARS.length();
+            int index = rnd.nextInt(CHARS.length());
             salt.append(CHARS.charAt(index));
         }
         return salt.toString();
