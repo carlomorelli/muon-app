@@ -7,6 +7,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+/**
+ * List of Items as handy presentation DTO (to be used for GetList APIs)
+ * @author Carlo Morelli
+ *
+ */
 @JsonInclude(Include.NON_NULL)
 public class ItemsDto {
 

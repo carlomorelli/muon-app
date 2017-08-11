@@ -107,9 +107,21 @@ public class RestApiTest {
     			HttpErrorEvent.SC_403_INVALID_INDEX_IN_BODY
     		},
     		{
+    			"{\"index\":135,\"label\":\"\"}",
+    			HttpErrorEvent.SC_403_MISSING_FIELDS_IN_BODY
+    		},
+    		{
+    			"{\"label\":\"yadayada\"}",
+    			HttpErrorEvent.SC_403_MISSING_FIELDS_IN_BODY
+    		},
+    		{
     			RandomFunctions.randomString(20),
     			HttpErrorEvent.SC_403_MALFORMED_BODY
-    		}
+    		},
+    		{
+    			"",
+    			HttpErrorEvent.SC_403_MALFORMED_BODY
+    		},
     	};
     }
     

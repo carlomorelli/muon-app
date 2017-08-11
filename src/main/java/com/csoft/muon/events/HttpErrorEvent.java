@@ -2,6 +2,12 @@ package com.csoft.muon.events;
 
 import com.csoft.muon.handler.Result;
 
+/**
+ * Enum collecting noteworthy HTTP errors and messages handled by the application
+ * To be used by main and test code
+ * @author Carlo Morelli
+ *
+ */
 public enum HttpErrorEvent {
 
 	SC_400_FORBIDDEN_BODY(400, "Forbidded to send body"),

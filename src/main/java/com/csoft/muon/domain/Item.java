@@ -7,6 +7,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+/**
+ * Main database entity
+ * @author Carlo Morelli
+ *
+ */
 @JsonInclude(Include.NON_NULL)
 public class Item {
 

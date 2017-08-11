@@ -5,6 +5,11 @@ import java.io.IOException;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Json utilities for main and test code
+ * @author Carlo Morelli
+ *
+ */
 public class JsonFunctions {
 
     public static String dumpJson(Object object) throws IOException {

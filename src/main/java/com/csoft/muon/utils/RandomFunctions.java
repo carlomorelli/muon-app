@@ -4,6 +4,11 @@ import java.util.Random;
 
 import com.csoft.muon.domain.Item;
 
+/**
+ * Random utilities for main and test code
+ * @author Carlo Morelli
+ * 
+ */
 public class RandomFunctions {
 
     private static final String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
