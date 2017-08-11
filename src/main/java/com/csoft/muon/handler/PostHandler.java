@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import com.csoft.muon.domain.Item;
+import com.csoft.muon.events.HttpErrorEvent;
 import com.csoft.muon.repository.Repository;
 import com.csoft.muon.repository.RepositoryException;
 
@@ -28,18 +29,18 @@ public final class PostHandler extends AbstractHandler {
        	try {
     		item = parseJson(requestBody, Item.class);
     	} catch (IOException e) {
-            return new Result(403, "ClientError: malformed / unparsable input body");
+            return HttpErrorEvent.SC_403_MALFORMED_BODY.asResult();
         }
         if (!item.isValid()) {
-            return new Result(403, "ClientError: required fields not available in body");
+            return HttpErrorEvent.SC_403_MISSING_FIELDS_IN_BODY.asResult();
         }
         try {
             repo.insertItem(item);
             return new Result(200, dumpJson(item));
         } catch (RepositoryException e) {
-            return new Result(403, "ClientError: invalid / null index or already used index in input item");
+            return HttpErrorEvent.SC_403_INVALID_INDEX_IN_BODY.asResult();
         } catch (IOException e) {
-            return new Result(503, "ServerError: unable to process correctly reflected item from database");
+            return HttpErrorEvent.SC_503_ERROR_CREATING_RETURN_BODY.asResult();
         }
     }
 

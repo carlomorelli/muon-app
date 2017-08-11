@@ -20,7 +20,7 @@ import org.testng.annotations.Test;
 import com.csoft.muon.App;
 import com.csoft.muon.domain.Item;
 import com.csoft.muon.domain.ItemsDto;
-import com.csoft.muon.handler.Result;
+import com.csoft.muon.events.HttpErrorEvent;
 import com.csoft.muon.repository.RepositoryImpl;
 import com.csoft.muon.repository.datasource.DataSourceFactory;
 import com.csoft.muon.utils.RandomFunctions;
@@ -104,53 +104,53 @@ public class RestApiTest {
     	return new Object[][] {
     		{
     			"{\"index\":-1,\"label\":\"label-3436\"}",
-    			new Result(403, "ClientError: invalid / null index or already used index in input item")
+    			HttpErrorEvent.SC_403_INVALID_INDEX_IN_BODY
     		},
     		{
     			RandomFunctions.randomString(20),
-    			new Result(403, "ClientError: malformed / unparsable input body")
+    			HttpErrorEvent.SC_403_MALFORMED_BODY
     		}
     	};
     }
     
     @Test(dataProvider = "postNegativeCases")
-    public void testPostNegativeCases(String bodyToSend, Result expectedResult) {
+    public void testPostNegativeCases(String bodyToSend, HttpErrorEvent expectedEvent) {
     	given()
     	.body(bodyToSend)
     	.contentType(ContentType.JSON)
     	.post("/webapi/items")
     	.then()
     	.assertThat()
-    	.statusCode(expectedResult.getStatus())
-    	.body(equalTo(expectedResult.getBody()));
+    	.statusCode(expectedEvent.getStatusCode())
+    	.body(equalTo(expectedEvent.getErrorMsg()));
     }
     
     @Test
     public void testGetWithBody() {
     	String bodyToSend = RandomFunctions.randomString(20);
-    	Result expectedResult = new Result(400, "Forbidded to send body");
+    	HttpErrorEvent expectedEvent = HttpErrorEvent.SC_400_FORBIDDEN_BODY;
     	given()
     	.body(bodyToSend)
     	.contentType(ContentType.JSON)
     	.get("/webapi/items/1")
     	.then()
     	.assertThat()
-    	.statusCode(expectedResult.getStatus())
-    	.body(equalTo(expectedResult.getBody()));
+    	.statusCode(expectedEvent.getStatusCode())
+    	.body(equalTo(expectedEvent.getErrorMsg()));
     }
 
     @Test
     public void testGetAllWithBody() {
     	String bodyToSend = RandomFunctions.randomString(20);
-    	Result expectedResult = new Result(400, "Forbidded to send body");
+    	HttpErrorEvent expectedEvent = HttpErrorEvent.SC_400_FORBIDDEN_BODY;
     	given()
     	.body(bodyToSend)
     	.contentType(ContentType.JSON)
     	.get("/webapi/items")
     	.then()
     	.assertThat()
-    	.statusCode(expectedResult.getStatus())
-    	.body(equalTo(expectedResult.getBody()));
+    	.statusCode(expectedEvent.getStatusCode())
+    	.body(equalTo(expectedEvent.getErrorMsg()));
     }
 
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.csoft.muon.domain.Item;
 import com.csoft.muon.domain.ItemsDto;
+import com.csoft.muon.events.HttpErrorEvent;
 import com.csoft.muon.repository.Repository;
 
 /**
@@ -25,7 +26,7 @@ public final class GetListHandler extends AbstractHandler {
     @Override
     public Result process(String requestBody, Map<String, String> requestParams) {
         if (requestBody != null && !requestBody.isEmpty()) {
-        	return new Result(400, "Forbidded to send body");
+        	return HttpErrorEvent.SC_400_FORBIDDEN_BODY.asResult();
         }
     	try {
             List<Item> fetchedItems = repo.fetchAllItems();
@@ -33,7 +34,7 @@ public final class GetListHandler extends AbstractHandler {
             String body = dumpJson(dto);
             return new Result(200, body);
         } catch (IOException e) {
-            return new Result(503, "ServerError: unable to process correctly reflected item from database");
+            return HttpErrorEvent.SC_503_ERROR_CREATING_RETURN_BODY.asResult();
         }
     }
 

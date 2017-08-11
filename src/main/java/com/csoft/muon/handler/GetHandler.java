@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import com.csoft.muon.domain.Item;
+import com.csoft.muon.events.HttpErrorEvent;
 import com.csoft.muon.repository.Repository;
 import com.csoft.muon.repository.RepositoryException;
 
@@ -24,7 +25,7 @@ public final class GetHandler extends AbstractHandler {
     @Override
     public Result process(String requestBody, Map<String, String> requestParams) {
     	if (requestBody != null && !requestBody.isEmpty()) {
-        	return new Result(400, "Forbidded to send body");
+        	return HttpErrorEvent.SC_400_FORBIDDEN_BODY.asResult();
     	}
     	int index = Integer.parseInt(requestParams.get(":index"));
         try {
@@ -32,9 +33,9 @@ public final class GetHandler extends AbstractHandler {
             String body = dumpJson(fetchedItem);
             return new Result(200, body);
         } catch (RepositoryException e) {
-            return new Result(404, "ClientError: requested index [" + index + "] not found");
+            return HttpErrorEvent.SC_404_NOT_FOUND.asResult();
         } catch (IOException e) {
-            return new Result(503, "ServerError: unable to process correctly reflected item from database");
+            return HttpErrorEvent.SC_503_ERROR_CREATING_RETURN_BODY.asResult();
         }
     }
 
