@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="UnitTestSuite">
+<suite name="IntegrationTestSuite">
 
   <listeners>
     <listener class-name="listener.TestListener"/>
   </listeners>
   
-  <test name="UnitTest">
+  <test name="IntegrationTest">
     <packages>
-        <package name="unit.*"/>
+        <package name="integration.*"/>
     </packages>
   </test>
   
