@@ -17,11 +17,11 @@ public class RandomUtils {
         return new Item(index, label);
     }
     
-    public static String getRandomString(int length) {
+    public static String randomString(int length) {
         StringBuilder salt = new StringBuilder();
         Random rnd = new Random();
         while (salt.length() < length) {
-            int index = rnd.nextInt() * CHARS.length();
+            int index = rnd.nextInt(CHARS.length());
             salt.append(CHARS.charAt(index));
         }
         return salt.toString();

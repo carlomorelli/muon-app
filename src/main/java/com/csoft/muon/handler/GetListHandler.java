@@ -21,14 +21,17 @@ public final class GetListHandler extends AbstractHandler {
     }
 
     @Override
-    public Result process(Item item, Map<String, String> params) {
-        try {
+    public Result process(String requestBody, Map<String, String> requestParams) {
+        if (requestBody != null && !requestBody.isEmpty()) {
+        	return new Result(400, "Forbidded to send body");
+        }
+    	try {
             List<Item> fetchedItems = repo.fetchAllItems();
             ItemsDto dto = new ItemsDto(fetchedItems.size(), fetchedItems);
             String body = dumpJson(dto);
             return new Result(200, body);
         } catch (IOException e) {
-            return new Result(503, "ServerError: unable to provide correctly item");
+            return new Result(503, "ServerError: unable to process correctly reflected item from database");
         }
     }
 

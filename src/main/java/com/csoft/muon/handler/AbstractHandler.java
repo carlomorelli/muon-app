@@ -1,7 +1,5 @@
 package com.csoft.muon.handler;
 
-import static com.csoft.muon.utils.RandomUtils.nullItem;
-
 import java.io.IOException;
 import java.util.Map;
 
@@ -35,27 +33,16 @@ public abstract class AbstractHandler implements Route {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
     }
     
-    public abstract Result process(Item item, Map<String, String> params);
+    public abstract Result process(String requestBody, Map<String, String> requestParams);
     
     @Override
     public Object handle(Request request, Response response) {
-    	try {
-	        Item item;
-	        if (request.body().isEmpty() || request.body()== null) {
-	            item = nullItem();
-	        } else {
-	            item = parseJson(request.body());
-	        }
-	        Result result = process(item, request.params());
+    	    Result result = process(request.body(), request.params());
 	        response.type("application/json");
 	        response.status(result.getStatus());
 	        response.body(result.getBody());
 	        LOGGER.info("Handling {} request: {}", request.requestMethod(), result.getBody());
 	        return result.getBody();
-    	} catch (IOException e) {
-    		LOGGER.error("Unable to handle {} request - StackTrace <{}>", request.requestMethod(), e);
-    		throw new RuntimeException(e);
-    	}
     }
     
     

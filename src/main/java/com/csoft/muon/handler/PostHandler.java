@@ -10,7 +10,7 @@ import com.csoft.muon.repository.RepositoryException;
 /**
  * Final class implementing the Post action
  * The process() method requires a valid Item in input
- * @author Carlo
+ * @author Carlo Morelli
  *
  */
 public final class PostHandler extends AbstractHandler {
@@ -20,8 +20,14 @@ public final class PostHandler extends AbstractHandler {
     }
 
     @Override
-    public Result process(Item item, Map<String, String> params) {
-    	if (!item.isValid()) {
+    public Result process(String requestBody, Map<String, String> requestParams) {
+        Item item;
+       	try {
+    		item = parseJson(requestBody);
+    	} catch (IOException e) {
+            return new Result(403, "ClientError: malformed / unparsable input body");
+        }
+        if (!item.isValid()) {
             return new Result(403, "ClientError: required fields not available in body");
         }
         try {
@@ -30,7 +36,7 @@ public final class PostHandler extends AbstractHandler {
         } catch (RepositoryException e) {
             return new Result(403, "ClientError: invalid / null index or already used index in input item");
         } catch (IOException e) {
-            return new Result(503, "ServerError: unable to process correctly input item");
+            return new Result(503, "ServerError: unable to process correctly reflected item from database");
         }
     }
 

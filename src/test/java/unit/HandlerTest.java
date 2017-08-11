@@ -8,7 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doThrow;
 
-
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -22,6 +22,8 @@ import com.csoft.muon.handler.PostHandler;
 import com.csoft.muon.handler.Result;
 import com.csoft.muon.repository.Repository;
 import com.csoft.muon.repository.RepositoryException;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class HandlerTest {
 
@@ -35,6 +37,14 @@ public class HandlerTest {
     @BeforeMethod
     public void setup() {
         repo = mock(Repository.class);
+    }
+    
+    
+    @Test
+    public void testGetHandler_cannotAcceptBody() throws RepositoryException, IOException {
+        GetHandler handler = new GetHandler(repo);
+        Result result = handler.process(dumpJson(testItem2), Collections.singletonMap(":index", "1"));
+        assertThat(result.getStatus(), equalTo(400));
     }
     
     @Test
@@ -56,6 +66,13 @@ public class HandlerTest {
     }
     
     @Test
+    public void testGetListHandler_cannotAcceptBody() throws RepositoryException, IOException {
+        GetHandler handler = new GetHandler(repo);
+        Result result = handler.process(dumpJson(testItem1), Collections.emptyMap());
+        assertThat(result.getStatus(), equalTo(400));
+    }
+
+    @Test
     public void testGetListHandler_canFetchAll_withEmptyRepo() {
         when(repo.fetchAllItems()).thenReturn(Collections.emptyList());
         GetListHandler handler = new GetListHandler(repo);
@@ -75,20 +92,26 @@ public class HandlerTest {
     }
 
     @Test
-    public void testPostHandler_canAppend() throws RepositoryException {
+    public void testPostHandler_canAppend() throws RepositoryException, IOException {
         PostHandler handler = new PostHandler(repo);
-        Result result = handler.process(testItem2, Collections.emptyMap());
+        Result result = handler.process(dumpJson(testItem2), Collections.emptyMap());
         assertThat(result.getStatus(), equalTo(200));
         verify(repo).insertItem(testItem2);
     }
     
     @Test
-    public void testPostHandler_cannotAppend_withInvalidIndex() throws RepositoryException {
+    public void testPostHandler_cannotAppend_withInvalidIndex() throws RepositoryException, IOException {
         doThrow(RepositoryException.class).when(repo).insertItem(testItem0);
         PostHandler handler = new PostHandler(repo);
-        Result result = handler.process(testItem0, Collections.emptyMap());
+        Result result = handler.process(dumpJson(testItem0), Collections.emptyMap());
         assertThat(result.getStatus(), equalTo(403));
         verify(repo).insertItem(testItem0);
     }
     
+    
+    private static String dumpJson(Object object) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+    	return mapper.writeValueAsString(object);
+    }
 }

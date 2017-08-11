@@ -20,8 +20,11 @@ public final class GetHandler extends AbstractHandler {
     }
 
     @Override
-    public Result process(Item item, Map<String, String> params) {
-    	int index = Integer.parseInt(params.get(":index"));
+    public Result process(String requestBody, Map<String, String> requestParams) {
+    	if (requestBody != null && !requestBody.isEmpty()) {
+        	return new Result(400, "Forbidded to send body");
+    	}
+    	int index = Integer.parseInt(requestParams.get(":index"));
         try {
             Item fetchedItem = repo.fetchItemAtIndex(index);
             String body = dumpJson(fetchedItem);
@@ -29,7 +32,7 @@ public final class GetHandler extends AbstractHandler {
         } catch (RepositoryException e) {
             return new Result(404, "ClientError: requested index [" + index + "] not found");
         } catch (IOException e) {
-            return new Result(503, "ServerError: unable to provide correctly item");
+            return new Result(503, "ServerError: unable to process correctly reflected item from database");
         }
     }
 
