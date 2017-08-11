@@ -1,5 +1,8 @@
 package com.csoft.muon.handler;
 
+import static com.csoft.muon.utils.JsonFunctions.dumpJson;
+import static com.csoft.muon.utils.JsonFunctions.parseJson;
+
 import java.io.IOException;
 import java.util.Map;
 
@@ -23,7 +26,7 @@ public final class PostHandler extends AbstractHandler {
     public Result process(String requestBody, Map<String, String> requestParams) {
         Item item;
        	try {
-    		item = parseJson(requestBody);
+    		item = parseJson(requestBody, Item.class);
     	} catch (IOException e) {
             return new Result(403, "ClientError: malformed / unparsable input body");
         }

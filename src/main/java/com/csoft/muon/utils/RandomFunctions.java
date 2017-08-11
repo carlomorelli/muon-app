@@ -4,7 +4,7 @@ import java.util.Random;
 
 import com.csoft.muon.domain.Item;
 
-public class RandomUtils {
+public class RandomFunctions {
 
     private static final String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     

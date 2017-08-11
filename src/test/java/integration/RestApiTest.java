@@ -23,7 +23,7 @@ import com.csoft.muon.domain.ItemsDto;
 import com.csoft.muon.handler.Result;
 import com.csoft.muon.repository.RepositoryImpl;
 import com.csoft.muon.repository.datasource.DataSourceFactory;
-import com.csoft.muon.utils.RandomUtils;
+import com.csoft.muon.utils.RandomFunctions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.restassured.RestAssured;
@@ -63,7 +63,7 @@ public class RestApiTest {
     @Test
     public void testSubmitARandomItemAndAssertItIsPersisted() throws IOException {
     	Integer index = new SecureRandom().nextInt(10000);
-        Item item = RandomUtils.randomItem(index);
+        Item item = RandomFunctions.randomItem(index);
 
         // submit item
         given()
@@ -107,7 +107,7 @@ public class RestApiTest {
     			new Result(403, "ClientError: invalid / null index or already used index in input item")
     		},
     		{
-    			RandomUtils.randomString(20),
+    			RandomFunctions.randomString(20),
     			new Result(403, "ClientError: malformed / unparsable input body")
     		}
     	};
@@ -127,7 +127,7 @@ public class RestApiTest {
     
     @Test
     public void testGetWithBody() {
-    	String bodyToSend = RandomUtils.randomString(20);
+    	String bodyToSend = RandomFunctions.randomString(20);
     	Result expectedResult = new Result(400, "Forbidded to send body");
     	given()
     	.body(bodyToSend)
@@ -141,7 +141,7 @@ public class RestApiTest {
 
     @Test
     public void testGetAllWithBody() {
-    	String bodyToSend = RandomUtils.randomString(20);
+    	String bodyToSend = RandomFunctions.randomString(20);
     	Result expectedResult = new Result(400, "Forbidded to send body");
     	given()
     	.body(bodyToSend)

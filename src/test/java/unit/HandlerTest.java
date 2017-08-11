@@ -1,6 +1,7 @@
 package unit;
 
-import static com.csoft.muon.utils.RandomUtils.randomItem;
+import static com.csoft.muon.utils.RandomFunctions.randomItem;
+import static com.csoft.muon.utils.JsonFunctions.dumpJson;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
@@ -22,8 +23,6 @@ import com.csoft.muon.handler.PostHandler;
 import com.csoft.muon.handler.Result;
 import com.csoft.muon.repository.Repository;
 import com.csoft.muon.repository.RepositoryException;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class HandlerTest {
 
@@ -108,10 +107,4 @@ public class HandlerTest {
         verify(repo).insertItem(testItem0);
     }
     
-    
-    private static String dumpJson(Object object) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-    	return mapper.writeValueAsString(object);
-    }
 }
