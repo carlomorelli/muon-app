@@ -1,43 +1,40 @@
 package integration;
 
-import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import static com.csoft.muon.utils.JsonFunctions.dumpJson;
 import static com.csoft.muon.utils.RandomFunctions.randomItem;
-
+import static io.restassured.RestAssured.given;
 import static java.util.stream.Collectors.toList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
-import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
-import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
-import com.csoft.muon.AppConfig;
 import com.csoft.muon.domain.Item;
-import com.google.inject.Inject;
 
 import io.restassured.http.ContentType;
 
-@Guice(modules = AppConfig.class)
+/**
+ * The integration test will assume that the DB is not flushed. 
+ * Currently the database is forcefully truncated when the unit tests run, but this
+ * will change in the future.
+ * 
+ * @author Carlo Morelli
+ *
+ */
 public class PersistenceTest extends BaseTest {
 
-    
     private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceTest.class);
 
-    @Inject
-    DataSource ds;
-    
 	
 //    private Server server;
     
@@ -85,7 +82,7 @@ public class PersistenceTest extends BaseTest {
 
     	// assert all NUM items are persisted
     	LOGGER.info("Verifying storage of items...");
-        Sql2o sql2o = new Sql2o(ds);
+        Sql2o sql2o = new Sql2o(ds); //ds comes from BaseClass
     	try (Connection conn = sql2o.open()) {
     		for (int it=0; it < NUM; it++) {
 	    		List<Item> list = conn.createQuery("SELECT * FROM items WHERE (index) IS (:index)")

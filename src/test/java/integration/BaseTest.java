@@ -1,9 +1,11 @@
 package integration;
 
+import javax.sql.DataSource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Guice;
 
 import com.csoft.muon.App;
@@ -12,6 +14,11 @@ import com.google.inject.Inject;
 
 import io.restassured.RestAssured;
 
+/**
+ * Base class for all Integration Tests
+ * @author Carlo Morelli
+ *
+ */
 @Guice(modules = AppConfig.class)
 public class BaseTest {
 
@@ -20,14 +27,17 @@ public class BaseTest {
     @Inject
     protected App application;
     
-    @BeforeClass
+    @Inject
+    protected DataSource ds;
+    
+    @BeforeSuite
     public void setupClass() {
         LOGGER.info("Starting application...");
         application.startServer();
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
     
-    @AfterClass
+    @AfterSuite
     public void teardownClass() {
         LOGGER.info("Stopping application...");
         application.stopServer();

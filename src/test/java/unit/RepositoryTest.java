@@ -24,18 +24,17 @@ import com.csoft.muon.repository.RepositoryImpl;
 import com.csoft.muon.repository.datasource.DataSourceFactory;
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
-import com.google.inject.Inject;
 import com.google.inject.Injector;
 
 public class RepositoryTest {
 
-    @Inject
     DataSource ds;
-    
     RepositoryImpl repo;
     
     @BeforeClass
     public void setupClass() {
+    	
+    	// force usage of H2 for all Repository unit tests 
         Injector injector = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {

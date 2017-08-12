@@ -1,14 +1,13 @@
 package integration;
 
+import static com.csoft.muon.utils.JsonFunctions.dumpJson;
+import static com.csoft.muon.utils.RandomFunctions.randomItem;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasSize;
-
-import static com.csoft.muon.utils.JsonFunctions.dumpJson;
-import static com.csoft.muon.utils.RandomFunctions.randomItem;
 
 import java.io.IOException;
 import java.security.SecureRandom;
