@@ -26,22 +26,19 @@ public class App {
     private static final int WEB_PORT = 8080;
     private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
 
-    private final int webPort;
-    private final Repository repo;
+    private int webPort;
+    private Repository repo;
     
     @Inject
     public App(Repository repo) {
         this(WEB_PORT, repo);
     }
 
-    @Inject
     public App(int webPort, Repository repo) {
         this.webPort = webPort;
         this.repo = repo;
     }
     
-    
-
     public void startServer() {
         LOGGER.info("Starting service on port " + webPort + "...");
         port(webPort);
