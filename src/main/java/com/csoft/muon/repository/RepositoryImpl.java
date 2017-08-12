@@ -73,7 +73,7 @@ public class RepositoryImpl implements Repository {
         } catch (RepositoryException e) {
             throw new RepositoryException("Forbidden: Index is not existing");
         }
-        String sql = "DELETE FROM items WHERE (index) IS (:index)";
+        String sql = "DELETE FROM items WHERE index = :index";
         try (Connection conn = sql2o.open()) {
             conn.createQuery(sql)
                 .addParameter("index", index)
@@ -82,7 +82,7 @@ public class RepositoryImpl implements Repository {
     }
     
     public Item fetchItemAtIndex(int index) throws RepositoryException {
-        String sql = "SELECT * FROM items WHERE (index) IS (:index)";
+        String sql = "SELECT * FROM items WHERE index = :index";
         try (Connection conn = sql2o.open()) {
             List<Item> list = conn.createQuery(sql)
                 .addParameter("index", index)

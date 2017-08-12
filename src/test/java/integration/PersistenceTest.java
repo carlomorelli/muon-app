@@ -91,7 +91,7 @@ public class PersistenceTest extends BaseTest {
     	LOGGER.info("Verifying storage of items...");
     	try (Connection conn = sql2o.open()) {
     		for (int it=0; it < NUM; it++) {
-	    		List<Item> list = conn.createQuery("SELECT * FROM items WHERE (index) IS (:index)")
+	    		List<Item> list = conn.createQuery("SELECT * FROM items WHERE index = :index")
 	    				.addParameter("index", indexes.get(it))
 	                    .executeAndFetch(Item.class);
 	            assertThat(list.size(), equalTo(1));
@@ -125,7 +125,7 @@ public class PersistenceTest extends BaseTest {
     	// find item in DB and change label value
     	LOGGER.info("Verifying storage of item and modifying attribute...");
     	try (Connection conn = sql2o.open()) {
-    		List<Item> list = conn.createQuery("SELECT * FROM items WHERE (index) IS (:index)")
+    		List<Item> list = conn.createQuery("SELECT * FROM items WHERE index = :index")
     				.addParameter("index", index)
                     .executeAndFetch(Item.class);
             assertThat(list.size(), equalTo(1));

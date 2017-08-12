@@ -1,7 +1,5 @@
 package com.csoft.muon.repository.datasource;
 
-import java.sql.SQLException;
-
 import javax.sql.DataSource;
 
 import org.h2.jdbcx.JdbcDataSource;
@@ -15,7 +13,7 @@ import com.zaxxer.hikari.HikariDataSource;
  */
 public class DataSourceFactory {
 
-    public static DataSource getPostgresHikariCPDataSource() throws SQLException {
+    public static DataSource getPostgresHikariCPDataSource() {
         System.setProperty("hikaricp.configurationFile", "src/main/resources/configuration.properties");
         return new HikariDataSource();
     }
