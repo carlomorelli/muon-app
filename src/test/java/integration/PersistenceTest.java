@@ -28,9 +28,7 @@ import com.csoft.muon.domain.Item;
 import io.restassured.http.ContentType;
 
 /**
- * The integration test will assume that the DB is not flushed. 
- * Currently the database is forcefully truncated when the unit tests run, but this
- * will change in the future.
+ * Test class covering integration between web API service and connected production database.
  * 
  * @author Carlo Morelli
  *

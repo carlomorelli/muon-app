@@ -25,9 +25,7 @@ import com.csoft.muon.utils.RandomFunctions;
 import io.restassured.http.ContentType;
 
 /**
- * The integration test will assume that the DB is not flushed. 
- * Currently the database is forcefully truncated when the unit tests run, but this
- * will change in the future.
+ * Test class covering the HTTP API interactions with frontend clients.
  * 
  * @author Carlo Morelli
  *
