@@ -1,5 +1,8 @@
 language: java
 jdk:
   - oraclejdk8
+services:
+  - postgresql
+before_script: psql -c 'create database travis_ci_test;' -U postgres
 script: mvn clean cobertura:cobertura-integration-test coveralls:report
 #after_script: mvn clean test -Pintegration
