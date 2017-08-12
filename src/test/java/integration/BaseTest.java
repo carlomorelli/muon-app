@@ -31,14 +31,14 @@ public class BaseTest {
     protected DataSource ds;
     
     @BeforeSuite
-    public void setupClass() {
+    public void setupSuite() {
         LOGGER.info("Starting application...");
         application.startServer();
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
     
     @AfterSuite
-    public void teardownClass() {
+    public void teardownSuite() {
         LOGGER.info("Stopping application...");
         application.stopServer();
     }
