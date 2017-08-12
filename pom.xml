@@ -140,8 +140,7 @@
         <configuration>
           <format>xml</format>
           <maxmem>256m</maxmem>
-          <!-- aggregated reports for multi-module projects -->
-          <aggregate>true</aggregate>
+          <aggregate>true</aggregate> <!-- aggregated multi-module projects -->
         </configuration>
       </plugin>
       <plugin>

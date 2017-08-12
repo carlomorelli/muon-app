@@ -1,5 +1,7 @@
 package integration;
 
+import static com.csoft.muon.utils.JsonFunctions.dumpJson;
+import static com.csoft.muon.utils.RandomFunctions.randomItem;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -12,63 +14,36 @@ import java.security.SecureRandom;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-import com.csoft.muon.App;
 import com.csoft.muon.domain.Item;
 import com.csoft.muon.domain.ItemsDto;
 import com.csoft.muon.events.HttpErrorEvent;
-import com.csoft.muon.repository.RepositoryImpl;
-import com.csoft.muon.repository.datasource.DataSourceFactory;
 import com.csoft.muon.utils.RandomFunctions;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 /**
- * The integration test will assume that the DB is not flushed. 
- * Currently the database is forcefully truncated when the unit tests run, but this
- * will change in the future.
+ * Test class covering the HTTP API interactions with frontend clients.
  * 
  * @author Carlo Morelli
  *
  */
-public class RestApiTest {
+public class RestApiTest extends BaseTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RestApiTest.class);
 
-    private final ObjectMapper mapper = new ObjectMapper();
-    private App server;
-    
-
-    @BeforeClass
-    public void setupClass() {
-        server = new App(new RepositoryImpl(DataSourceFactory.getH2DataSource()));
-        LOGGER.info("Starting application...");
-        server.startServer();
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-    }
-
-    @AfterClass
-    public void teardownClass() {
-        LOGGER.info("Stopping application...");
-        server.stopServer();
-    }
-    
-
     @Test
-    public void testSubmitARandomItemAndAssertItIsPersisted() throws IOException {
+    public void testSubmitARandomItemAndAssertItIsRetrievable() throws IOException {
     	Integer index = new SecureRandom().nextInt(10000);
-        Item item = RandomFunctions.randomItem(index);
-
+        Item item = randomItem(index);
+        LOGGER.info("Asserting post and retrieval of object...");
+        
         // submit item
         given()
             .contentType(ContentType.JSON)
-            .body(mapper.writeValueAsString(item))
+            .body(dumpJson(item))
             .when()
             .post("/webapi/items")
             .then()
