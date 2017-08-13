@@ -17,7 +17,7 @@ public class AppConfig extends AbstractModule {
     @Override
     protected void configure() {
         bind(Repository.class).to(RepositoryImpl.class);
-        bind(DataSource.class).toInstance(DataSourceFactory.getPostgresHikariCPDataSource());
+        bind(DataSource.class).toInstance(DataSourceFactory.getPosgresSimpleDataSource());
     }
 
 }
