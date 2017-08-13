@@ -35,6 +35,18 @@ public class RestApiTest extends BaseTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(RestApiTest.class);
 
     @Test
+    public void testGetAllContent() {
+    	LOGGER.info("Asserting retrieval of all objects in table...");
+    	ItemsDto items = when()
+	    	.get("/webapi/items")
+	    	.then()
+	    	.assertThat()
+	    	.statusCode(200)
+	    	.extract().body().as(ItemsDto.class);
+    	assertThat(items.getTotal(), greaterThanOrEqualTo(0));
+    	
+    }
+    @Test
     public void testSubmitARandomItemAndAssertItIsRetrievable() throws IOException {
     	Integer index = new SecureRandom().nextInt(10000);
         Item item = randomItem(index);
