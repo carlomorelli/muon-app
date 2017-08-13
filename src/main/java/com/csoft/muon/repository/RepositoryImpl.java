@@ -47,11 +47,12 @@ public class RepositoryImpl implements Repository {
             throw new RepositoryException("Forbidden: Index must be strictly positive");
         }
         String sql = "INSERT INTO items(index, label) VALUES (:index,:label)";
-        try (Connection conn = sql2o.open()) {
+        try (Connection conn = sql2o.beginTransaction()) {
             try {
                 conn.createQuery(sql)
                 .bind(item)
-                .executeUpdate();
+                .executeUpdate()
+                .commit();
             } catch (Sql2oException e) {
                 throw new RepositoryException("Forbidden: Index is already under use", e);
             }
@@ -61,10 +62,11 @@ public class RepositoryImpl implements Repository {
     public void updateItem(Item item) throws RepositoryException {
         fetchItemAtIndex(item.getIndex());
         String sql = "UPDATE items SET label=:label WHERE index=:index";
-        try (Connection conn = sql2o.open()) {
+        try (Connection conn = sql2o.beginTransaction()) {
             conn.createQuery(sql)
                 .bind(item)
-                .executeUpdate();
+                .executeUpdate()
+                .commit();
         }
     }
     public void deleteItemAtIndex(int index) throws RepositoryException {
@@ -74,10 +76,11 @@ public class RepositoryImpl implements Repository {
             throw new RepositoryException("Forbidden: Index is not existing");
         }
         String sql = "DELETE FROM items WHERE index = :index";
-        try (Connection conn = sql2o.open()) {
+        try (Connection conn = sql2o.beginTransaction()) {
             conn.createQuery(sql)
                 .addParameter("index", index)
-                .executeUpdate();
+                .executeUpdate()
+                .commit();
         }
     }
     
@@ -101,9 +104,10 @@ public class RepositoryImpl implements Repository {
     public void flushTable() {
         LOGGER.warn("Flushing table...");
         String sql = "TRUNCATE TABLE items";
-        try (Connection conn = sql2o.open()) {
+        try (Connection conn = sql2o.beginTransaction()) {
             conn.createQuery(sql)
-                .executeUpdate();
+                .executeUpdate()
+                .commit();
         }
     }
     
@@ -113,15 +117,17 @@ public class RepositoryImpl implements Repository {
                 + "(index INTEGER not NULL,"
                 + " label VARCHAR(255),"
                 + " PRIMARY KEY ( index ))";
-        Connection conn = sql2o.open();
+        Connection conn = sql2o.beginTransaction();
         try {
             conn.createQuery(sql)
-                .executeUpdate();
+                .executeUpdate()
+                .commit();
         } catch (Sql2oException e) {
             LOGGER.warn("MainSchema already existing. Flushing tables...");
             sql = "TRUNCATE TABLE items";
             conn.createQuery(sql)
-                .executeUpdate();
+                .executeUpdate()
+                .commit();
         }
         conn.close();
     }
