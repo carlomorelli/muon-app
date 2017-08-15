@@ -63,8 +63,6 @@ public class App {
         
         App server = new App(webPort, repo);
         server.startServer();
-        Thread.sleep(600000);
-        server.stopServer();
     }
     
 
