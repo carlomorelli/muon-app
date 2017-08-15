@@ -9,6 +9,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.8</java.version>
     <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
     <maven-surefire-plugin.version>2.20</maven-surefire-plugin.version>
@@ -23,7 +24,7 @@
     <h2.version>1.4.192</h2.version>
     <sql2o.version>1.5.4</sql2o.version>
     <hikari.version>2.6.1</hikari.version>
-    <postgres.version>42.0.0</postgres.version>
+    <postgres.version>42.1.0</postgres.version>
     <testng.version>6.11</testng.version>
     <mockito.version>2.7.22</mockito.version>
     <restassured.version>3.0.2</restassured.version>
