@@ -13,7 +13,7 @@ import com.csoft.muon.repository.RepositoryException;
 
 /**
  * Final class implementing the Post action
- * The process() method requires a valid Item in input
+ * 
  * @author Carlo Morelli
  *
  */
@@ -26,9 +26,9 @@ public final class PostHandler extends AbstractHandler {
     @Override
     public Result process(String requestBody, Map<String, String> requestParams) {
         Item item;
-       	try {
-    		item = parseJson(requestBody, Item.class);
-    	} catch (IOException e) {
+        try {
+            item = parseJson(requestBody, Item.class);
+        } catch (IOException e) {
             return HttpErrorEvent.SC_403_MALFORMED_BODY.asResult();
         }
         if (!item.isValid()) {

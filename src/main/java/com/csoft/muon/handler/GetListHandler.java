@@ -13,7 +13,7 @@ import com.csoft.muon.repository.Repository;
 
 /**
  * Final class implementing the GetList action
- * The process() method does not require either a valid Item in input, nor a valid params map
+ * 
  * @author Carlo Morelli
  *
  */
@@ -26,9 +26,9 @@ public final class GetListHandler extends AbstractHandler {
     @Override
     public Result process(String requestBody, Map<String, String> requestParams) {
         if (requestBody != null && !requestBody.isEmpty()) {
-        	return HttpErrorEvent.SC_400_FORBIDDEN_BODY.asResult();
+            return HttpErrorEvent.SC_400_FORBIDDEN_BODY.asResult();
         }
-    	try {
+        try {
             List<Item> fetchedItems = repo.fetchAllItems();
             ItemsDto dto = new ItemsDto(fetchedItems.size(), fetchedItems);
             String body = dumpJson(dto);

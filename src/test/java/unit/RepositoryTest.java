@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 
-
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -30,11 +29,11 @@ public class RepositoryTest {
 
     DataSource ds;
     RepositoryImpl repo;
-    
+
     @BeforeClass
     public void setupClass() {
-    	
-    	// force usage of H2 for all Repository unit tests 
+
+        // force usage of H2 for all Repository unit tests
         Injector injector = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
@@ -43,7 +42,7 @@ public class RepositoryTest {
         });
         ds = injector.getInstance(DataSource.class);
     }
-    
+
     @BeforeMethod
     public void setup() {
         // create a new Dao for every test
@@ -55,20 +54,20 @@ public class RepositoryTest {
     public void teardown() {
         repo.flushTable();
     }
-    
+
     @Test
     public void testShouldInsertItem() throws RepositoryException {
         final Item item = new Item(456, "asdaiwdjawidj");
         repo.insertItem(item);
     }
-    
+
     @Test
     public void testShouldPersistItem() throws RepositoryException {
         final Item item = new Item(123, "test");
         repo.insertItem(item);
         assertThat(repo.fetchAllItems(), contains(item));
     }
-    
+
     @Test(expectedExceptions = RepositoryException.class)
     public void testShouldNotPersistItem_whenIndexIsAlreadyUsed() throws RepositoryException {
         final Item item1 = new Item(12345, "firstItem");
@@ -91,8 +90,7 @@ public class RepositoryTest {
         };
     }
 
-    @Test(expectedExceptions = RepositoryException.class,
-            dataProvider = "invalidIndexData")
+    @Test(expectedExceptions = RepositoryException.class, dataProvider = "invalidIndexData")
     public void testShouldNotPersistItem_whenInvalidIndex(final Item item) throws RepositoryException {
         repo.insertItem(item);
         List<Item> list = repo.fetchAllItems();
@@ -102,15 +100,13 @@ public class RepositoryTest {
     @Test
     public void testShouldPersistMultipleItems() {
         final int N = 100;
-        IntStream.range(0, N).forEach(
-                x -> {
-                    try {
-                        repo.insertItem(new Item(x+1, "prova" +x));
-                    } catch (RepositoryException e) {
-                        throw new RuntimeException("Error inserting item!", e);
-                    }
-                }
-        );
+        IntStream.range(0, N).forEach(x -> {
+            try {
+                repo.insertItem(new Item(x + 1, "prova" + x));
+            } catch (RepositoryException e) {
+                throw new RuntimeException("Error inserting item!", e);
+            }
+        });
         List<Item> list = repo.fetchAllItems();
         assertThat(list.size(), equalTo(N));
     }
@@ -124,13 +120,13 @@ public class RepositoryTest {
         assertThat(retrieved.getIndex(), equalTo(123));
         assertThat(retrieved.getLabel(), equalTo("test"));
     }
-    
+
     @Test(expectedExceptions = RepositoryException.class)
     public void testShouldNotFetchItem_whenIndexIsNotUsed() throws RepositoryException {
         Item retrieved = repo.fetchItemAtIndex(2342);
         assertThat(retrieved, nullValue());
     }
-    
+
     @Test
     public void testShouldUpdateItem() throws RepositoryException {
         final Item item1 = new Item(123, "originalData");

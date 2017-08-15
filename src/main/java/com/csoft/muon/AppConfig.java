@@ -9,6 +9,7 @@ import com.google.inject.AbstractModule;
 
 /**
  * Runtime application configuration using Google Guice
+ * 
  * @author Carlo Morelli
  * 
  */

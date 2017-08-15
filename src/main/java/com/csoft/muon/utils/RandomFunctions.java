@@ -6,13 +6,14 @@ import com.csoft.muon.domain.Item;
 
 /**
  * Random utilities for main and test code
+ * 
  * @author Carlo Morelli
  * 
  */
 public class RandomFunctions {
 
     private static final String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-    
+
     public static Item nullItem() {
         return new Item(null, null);
     }
@@ -21,7 +22,7 @@ public class RandomFunctions {
         String label = "label-" + index;
         return new Item(index, label);
     }
-    
+
     public static String randomString(int length) {
         StringBuilder salt = new StringBuilder();
         Random rnd = new Random();

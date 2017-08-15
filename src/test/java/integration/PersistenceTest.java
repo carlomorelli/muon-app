@@ -28,7 +28,8 @@ import com.csoft.muon.domain.Item;
 import io.restassured.http.ContentType;
 
 /**
- * Test class covering integration between web API service and connected production database.
+ * Test class covering integration between web API service and connected
+ * production database.
  * 
  * @author Carlo Morelli
  *
@@ -37,115 +38,102 @@ public class PersistenceTest extends BaseTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceTest.class);
     private Sql2o sql2o;
-    
+
     @BeforeClass
     public void setupClass() {
-    	sql2o = new Sql2o(ds); //datasouce is a protected field from BaseClass
+        sql2o = new Sql2o(ds); // datasouce is a protected field from BaseClass
     }
-	
-//    private Server server;
-    
-//    @BeforeClass
-//    public void setupClass() {
-//        try {
-//            server = Server.createTcpServer("-tcpPort", "9093").start();
-//            LOGGER.info("Started H2 server [{}]", server.getStatus());
-//        } catch (SQLException e) {
-//            LOGGER.error("Starting H2 server failed!");
-//            throw new RuntimeException(e);
-//        }
-//    }
-//    
-//    @AfterClass
-//    public void teardownClass() {
-//        server.stop();
-//        LOGGER.info("Stopped H2 server [{}]", server.getStatus());
-//    }
-    
+
+    // private Server server;
+
+    // @BeforeClass
+    // public void setupClass() {
+    // try {
+    // server = Server.createTcpServer("-tcpPort", "9093").start();
+    // LOGGER.info("Started H2 server [{}]", server.getStatus());
+    // } catch (SQLException e) {
+    // LOGGER.error("Starting H2 server failed!");
+    // throw new RuntimeException(e);
+    // }
+    // }
+    //
+    // @AfterClass
+    // public void teardownClass() {
+    // server.stop();
+    // LOGGER.info("Stopped H2 server [{}]", server.getStatus());
+    // }
+
     @Test
     public void testInsertItemsAndVerify() throws IOException {
-    	
-    	// items to insert
-    	final int NUM = 10;
 
-    	// generate NUM random indexes and attached Item objects
-    	final Random rnd = new SecureRandom();
-    	List<Integer> indexes = IntStream.range(0, NUM).mapToObj(it -> rnd.nextInt(10000)).collect(toList());
-    	List<Item> items = IntStream.range(0, NUM).mapToObj(it -> randomItem(indexes.get(it))).collect(toList());
+        // items to insert
+        final int NUM = 10;
 
-    	// submit NUM items via REST API
-    	for (int it = 0; it < NUM; it++) {
-	    	String body = dumpJson(items.get(it));
-	    	LOGGER.info("Registering item '{}'...", body);
-	    	given()
-	    		.contentType(ContentType.JSON)
-	    		.body(body)
-	    		.when()
-	    		.post("/webapi/items")
-	    		.then()
-	    		.assertThat()
-	    		.statusCode(200);
-    	}
+        // generate NUM random indexes and attached Item objects
+        final Random rnd = new SecureRandom();
+        List<Integer> indexes = IntStream.range(0, NUM).mapToObj(it -> rnd.nextInt(10000)).collect(toList());
+        List<Item> items = IntStream.range(0, NUM).mapToObj(it -> randomItem(indexes.get(it))).collect(toList());
 
-    	// assert all NUM items are persisted in DB
-    	LOGGER.info("Verifying storage of items...");
-    	try (Connection conn = sql2o.open()) {
-    		for (int it=0; it < NUM; it++) {
-	    		List<Item> list = conn.createQuery("SELECT * FROM items WHERE index = :index")
-	    				.addParameter("index", indexes.get(it))
-	                    .executeAndFetch(Item.class);
-	            assertThat(list.size(), equalTo(1));
-	            assertThat(list.get(0), equalTo(items.get(it)));
-    		}
+        // submit NUM items via REST API
+        for (int it = 0; it < NUM; it++) {
+            String body = dumpJson(items.get(it));
+            LOGGER.info("Registering item '{}'...", body);
+            given().contentType(ContentType.JSON).body(body)
+                    .when().post("/webapi/items")
+                    .then().assertThat().statusCode(200);
+        }
+
+        // assert all NUM items are persisted in DB
+        LOGGER.info("Verifying storage of items...");
+        try (Connection conn = sql2o.open()) {
+            for (int it = 0; it < NUM; it++) {
+                List<Item> list = conn.createQuery("SELECT * FROM items WHERE index = :index")
+                        .addParameter("index", indexes.get(it))
+                        .executeAndFetch(Item.class);
+                assertThat(list.size(), equalTo(1));
+                assertThat(list.get(0), equalTo(items.get(it)));
+            }
         }
     }
-    
+
     @Test
     public void testModifyItemInDb() throws IOException {
-    	
-    	// generate random item and submit via REST API
-    	Integer index = new SecureRandom().nextInt(10000);
-    	Item originalItem = randomItem(index);
-    	Item modifiedItem = new Item(originalItem.getIndex(), randomString(10));
 
-    	String body = dumpJson(originalItem);
-    	LOGGER.info("Registering item '{}'...", body);
-    	Item submittedItem = given()
-    		.contentType(ContentType.JSON)
-    		.body(body)
-    		.when()
-    		.post("/webapi/items")
-    		.then()
-    		.assertThat()
-    		.statusCode(200)
-    		.contentType(ContentType.JSON)
-    		.extract().body().as(Item.class);
-    	assertThat(submittedItem, equalTo(originalItem));
+        // generate random item and submit via REST API
+        Integer index = new SecureRandom().nextInt(10000);
+        Item originalItem = randomItem(index);
+        Item modifiedItem = new Item(originalItem.getIndex(), randomString(10));
 
-    	// find item in DB and change label value
-    	LOGGER.info("Verifying storage of item and modifying attribute...");
-    	try (Connection conn = sql2o.open()) {
-    		List<Item> list = conn.createQuery("SELECT * FROM items WHERE index = :index")
-    				.addParameter("index", index)
+        String body = dumpJson(originalItem);
+        LOGGER.info("Registering item '{}'...", body);
+        Item submittedItem =
+                given().contentType(ContentType.JSON).body(body)
+                .when().post("/webapi/items")
+                .then().assertThat().statusCode(200).contentType(ContentType.JSON)
+                .extract().as(Item.class);
+        assertThat(submittedItem, equalTo(originalItem));
+
+        // find item in DB and change label value
+        LOGGER.info("Verifying storage of item and modifying attribute...");
+        try (Connection conn = sql2o.open()) {
+            List<Item> list = conn.createQuery("SELECT * FROM items WHERE index = :index")
+                    .addParameter("index", index)
                     .executeAndFetch(Item.class);
             assertThat(list.size(), equalTo(1));
             assertThat(list.get(0), equalTo(originalItem));
             conn.createQuery("UPDATE items SET label=:label WHERE index=:index")
-		            .bind(modifiedItem)
-		            .executeUpdate();
+                    .bind(modifiedItem)
+                    .executeUpdate();
         }
-    	
-    	// retrieve item from REST API and assert is modified
-    	LOGGER.info("Retrieving modified item...");
-    	Item retrievedItem = when()
-			.get("/webapi/items/" + originalItem.getIndex())
-			.then()
-			.assertThat()
-			.statusCode(200)
-			.contentType(ContentType.JSON)
-			.extract().body().as(Item.class);
-    	assertThat(retrievedItem, equalTo(modifiedItem));
-    	assertThat(retrievedItem, not(equalTo(originalItem)));
+
+        // retrieve item from REST API and assert is modified
+        LOGGER.info("Retrieving modified item...");
+        Item retrievedItem =
+                when().get("/webapi/items/" + originalItem.getIndex())
+                .then().assertThat().statusCode(200).contentType(ContentType.JSON)
+                .extract().body().as(Item.class);
+        assertThat(retrievedItem, equalTo(modifiedItem));
+        assertThat(retrievedItem, not(equalTo(originalItem)));
     }
-    
+
 }

@@ -3,10 +3,6 @@
 
 <suite name="UnitTestSuite">
 
-  <listeners>
-    <listener class-name="listener.TestListener"/>
-  </listeners>
-  
   <test name="UnitTest">
     <packages>
         <package name="unit.*"/>

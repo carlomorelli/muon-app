@@ -12,7 +12,7 @@ import com.csoft.muon.repository.RepositoryException;
 
 /**
  * Final class implementing the Get action
- * The process() method does not require a valid Item in input, but a valid params map to retrieve the index
+ * 
  * @author Carlo Morelli
  *
  */
@@ -24,10 +24,10 @@ public final class GetHandler extends AbstractHandler {
 
     @Override
     public Result process(String requestBody, Map<String, String> requestParams) {
-    	if (requestBody != null && !requestBody.isEmpty()) {
-        	return HttpErrorEvent.SC_400_FORBIDDEN_BODY.asResult();
-    	}
-    	int index = Integer.parseInt(requestParams.get(":index"));
+        if (requestBody != null && !requestBody.isEmpty()) {
+            return HttpErrorEvent.SC_400_FORBIDDEN_BODY.asResult();
+        }
+        int index = Integer.parseInt(requestParams.get(":index"));
         try {
             Item fetchedItem = repo.fetchItemAtIndex(index);
             String body = dumpJson(fetchedItem);

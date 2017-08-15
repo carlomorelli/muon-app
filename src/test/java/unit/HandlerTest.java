@@ -27,25 +27,24 @@ import com.csoft.muon.repository.RepositoryException;
 public class HandlerTest {
 
     private Repository repo;
-    
+
     private Item testItem0 = randomItem(0);
     private Item testItem1 = randomItem(1);
     private Item testItem2 = randomItem(2);
     private Item testItem3 = randomItem(3);
-    
+
     @BeforeMethod
     public void setup() {
         repo = mock(Repository.class);
     }
-    
-    
+
     @Test
     public void testGetHandler_cannotAcceptBody() throws RepositoryException, IOException {
         GetHandler handler = new GetHandler(repo);
         Result result = handler.process(dumpJson(testItem2), Collections.singletonMap(":index", "1"));
         assertThat(result.getStatus(), equalTo(400));
     }
-    
+
     @Test
     public void testGetHandler_canFetch() throws RepositoryException {
         when(repo.fetchItemAtIndex(1)).thenReturn(testItem1);
@@ -54,7 +53,7 @@ public class HandlerTest {
         assertThat(result.getStatus(), equalTo(200));
         verify(repo).fetchItemAtIndex(1);
     }
-    
+
     @Test
     public void testGetHandler_cannotFetchUnexistingItem() throws RepositoryException {
         when(repo.fetchItemAtIndex(1)).thenThrow(RepositoryException.class);
@@ -63,7 +62,7 @@ public class HandlerTest {
         assertThat(result.getStatus(), equalTo(404));
         verify(repo).fetchItemAtIndex(1);
     }
-    
+
     @Test
     public void testGetListHandler_cannotAcceptBody() throws RepositoryException, IOException {
         GetHandler handler = new GetHandler(repo);
@@ -79,14 +78,15 @@ public class HandlerTest {
         assertThat(result.getStatus(), equalTo(200));
         verify(repo).fetchAllItems();
     }
-    
+
     @Test
     public void testGetListHandler_canFetchAll() {
         when(repo.fetchAllItems()).thenReturn(Arrays.asList(testItem1, testItem2, testItem3));
         GetListHandler handler = new GetListHandler(repo);
         Result result = handler.process(null, Collections.emptyMap());
         assertThat(result.getStatus(), equalTo(200));
-        //assertThat(result.getBody(), dumpJson(Arrays.asList(testItem1, testItem2, testItem3)))
+        // assertThat(result.getBody(), dumpJson(Arrays.asList(testItem1, testItem2,
+        // testItem3)))
         verify(repo).fetchAllItems();
     }
 
@@ -97,7 +97,7 @@ public class HandlerTest {
         assertThat(result.getStatus(), equalTo(200));
         verify(repo).insertItem(testItem2);
     }
-    
+
     @Test
     public void testPostHandler_cannotAppend_withInvalidIndex() throws RepositoryException, IOException {
         doThrow(RepositoryException.class).when(repo).insertItem(testItem0);
@@ -106,5 +106,5 @@ public class HandlerTest {
         assertThat(result.getStatus(), equalTo(403));
         verify(repo).insertItem(testItem0);
     }
-    
+
 }

@@ -18,6 +18,7 @@ import com.google.inject.Injector;
 
 /**
  * Frontend web application
+ * 
  * @author Carlo Morelli
  *
  */
@@ -28,7 +29,7 @@ public class App {
 
     private int webPort;
     private Repository repo;
-    
+
     @Inject
     public App(Repository repo) {
         this(WEB_PORT, repo);
@@ -38,7 +39,7 @@ public class App {
         this.webPort = webPort;
         this.repo = repo;
     }
-    
+
     public void startServer() {
         LOGGER.info("Starting service on port " + webPort + "...");
         port(webPort);
@@ -53,18 +54,16 @@ public class App {
     }
 
     public static void main(String... args) throws InterruptedException {
-        
+
         Injector injector = Guice.createInjector(new AppConfig());
         Repository repo = injector.getInstance(Repository.class);
         int webPort = WEB_PORT;
         if (args.length > 0) {
             webPort = Integer.parseInt(args[0]);
         }
-        
+
         App server = new App(webPort, repo);
         server.startServer();
     }
-    
 
-    
 }
