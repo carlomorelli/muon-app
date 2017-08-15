@@ -5,6 +5,8 @@ jdk:
   - oraclejdk8
 services:
   - postgresql
-before_script: psql -c 'create database travis_ci_test;' -U postgres
+before_script: 
+  - psql -c 'create database travis_ci_test;' -U postgres
+  - psql -U postgres -d travis_ci_test -a -f ./src/main/resources/db/schema.sql 
 script: mvn clean cobertura:cobertura-integration-test coveralls:report
 #after_script: mvn clean test -Pintegration
