@@ -106,8 +106,7 @@ public class PersistenceTest extends BaseTest {
 
         String body = dumpJson(originalItem);
         LOGGER.info("Registering item '{}'...", body);
-        Item submittedItem =
-                given().contentType(ContentType.JSON).body(body)
+        Item submittedItem = given().contentType(ContentType.JSON).body(body)
                 .when().post("/webapi/items")
                 .then().assertThat().statusCode(200).contentType(ContentType.JSON)
                 .extract().as(Item.class);
@@ -128,10 +127,9 @@ public class PersistenceTest extends BaseTest {
 
         // retrieve item from REST API and assert is modified
         LOGGER.info("Retrieving modified item...");
-        Item retrievedItem =
-                when().get("/webapi/items/" + originalItem.getIndex())
+        Item retrievedItem = when().get("/webapi/items/" + originalItem.getIndex())
                 .then().assertThat().statusCode(200).contentType(ContentType.JSON)
-                .extract().body().as(Item.class);
+                .extract().as(Item.class);
         assertThat(retrievedItem, equalTo(modifiedItem));
         assertThat(retrievedItem, not(equalTo(originalItem)));
     }

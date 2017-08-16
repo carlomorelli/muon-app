@@ -5,9 +5,13 @@ import static com.csoft.muon.utils.RandomFunctions.randomItem;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.isEmptyOrNullString;
+
 
 import java.io.IOException;
 import java.security.SecureRandom;
@@ -126,6 +130,15 @@ public class RestApiTest extends BaseTest {
                 .then().assertThat()
                 .statusCode(expectedEvent.getStatusCode())
                 .body(equalTo(expectedEvent.getErrorMsg()));
+    }
+    
+    @Test
+    public void testVersionPage() {
+        when().get("/version")
+                .then().assertThat()
+                .statusCode(200)
+                .body("name", not(isEmptyOrNullString()))
+                .body("version", not(isEmptyOrNullString()));
     }
 
 }
