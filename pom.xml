@@ -3,9 +3,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.csoft</groupId>
-  <artifactId>project-muon</artifactId>
+  <artifactId>muon-app</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>project-muon</name>
+  <name>muon-app</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
