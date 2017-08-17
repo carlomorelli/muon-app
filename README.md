@@ -1,8 +1,8 @@
 # Muon
 
-[![Build Status](https://travis-ci.org/carlomorelli/project-muon.svg?branch=master)](https://travis-ci.org/carlomorelli/project-muon)
+[![Build Status](https://travis-ci.org/carlomorelli/muon-app.svg?branch=master)](https://travis-ci.org/carlomorelli/muon-app)
 
-[![Coverage Status](https://coveralls.io/repos/github/carlomorelli/project-muon/badge.svg)](https://coveralls.io/github/carlomorelli/project-muon)
+[![Coverage Status](https://coveralls.io/repos/github/carlomorelli/muon-app/badge.svg?branch=master)](https://coveralls.io/github/carlomorelli/muon-app?branch=master)
 
 Muon is a backend web application prototype.
 It not is meant to be anything specific, but simply is a *demo integration* of multiple Java technologies, libraries and tools for the backend and to create the basis for any backend project.
