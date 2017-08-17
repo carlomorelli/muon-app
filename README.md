@@ -1,12 +1,12 @@
 # Muon
 
-[![Build Status](https://travis-ci.org/carlomorelli/project-muon.svg?branch=master)](https://travis-ci.org/carlomorelli/project-muon)
+[![Build Status](https://travis-ci.org/carlomorelli/muon-app.svg?branch=master)](https://travis-ci.org/carlomorelli/muon-app)
 
-[![Coverage Status](https://coveralls.io/repos/github/carlomorelli/project-muon/badge.svg)](https://coveralls.io/github/carlomorelli/project-muon)
+[![Coverage Status](https://coveralls.io/repos/github/carlomorelli/muon-app/badge.svg?branch=master)](https://coveralls.io/github/carlomorelli/muon-app?branch=master)
 
 Muon is a backend web application prototype.
 It not is meant to be anything specific, but simply is a *demo integration* of multiple Java technologies, libraries and tools for the backend and to create the basis for any backend project.
-The concept is somewhat inspired by [Dropwizard](www.dropwizard.io), but with the idea of being purely an integration of easy-to-use toolkits more than a full fledged opinionated framework with rigid directives.
+The concept is somewhat inspired by [Dropwizard](www.dropwizard.io), but with less ambitions and hopefully with a clearer way to use.
 
 In Muon the following Java technologies are combined:
 
@@ -20,10 +20,10 @@ In Muon the following Java technologies are combined:
 * [H2](http://www.h2database.com/html/main.html) for database unit testing
 * [Sql2o](http://www.sql2o.org/) as POJO wrapper/unwrapper for JDBC 
 
-In addition to that, the project is in Continuous Integration on [Travis-CI](https://travis-ci.org/carlomorelli/project-muon).
-The [Cobertura Maven plugin](http://www.mojohaus.org/cobertura-maven-plugin/) and [Coveralls](https://coveralls.io/github/carlomorelli/project-muon) service are used for reporting the code coverage results -- You can check out the `pom.xml` in the `<plugin>...</plugin> section to understand how integration is accomplished.
+The project is in Continuous Integration on [Travis-CI](https://travis-ci.org/carlomorelli/project-muon).
+The [Cobertura Maven plugin](http://www.mojohaus.org/cobertura-maven-plugin/) and [Coveralls](https://coveralls.io/github/carlomorelli/project-muon) service are used for reporting the code coverage results; you can check out the `pom.xml` in the `<plugin>...</plugin>` section to understand how the service is integrated.
 
-Even if the Java technologies employed are a few, a FatJar version of Muon weights **less than 12 Megabytes**, making the minification for possible microservices and Docker containers pretty easy. We measured a start up time between 1 and 3 seconds including connection pooling to the database.
+Even if the Java technologies employed are a few, a Fat-Jar version of Muon weights **less than 12 Megabytes**, making the minification for possible microservices and Docker containers pretty easy. We measured a start up time between 1 and 3 seconds including connection pooling to the database.
 
 ## Configuration
 The application uses a mixture of configuration file for handling the production database (at `src/main/resources/configuration.properties`), and a Guice module `AppConfig` for injecting the application and the test code.
@@ -45,7 +45,7 @@ To prepare the database service (one-off):
 * Create a database with `createdb <dbname> -h localhost -U postgres`
 * Submit the schema file with `psql -d <dbname> -a -f ./src/main/resources/db/schema.sql`
 
-Once the FatJar is built, the application can be simply run with
+Once the Fat-Jar is built, the application can be simply run with
 ```
 java -jar target/muon-app-0.0.1-SNAPSHOT.jar
 ```
@@ -66,13 +66,13 @@ mvn clean verify
 * POST `http://localhost:8080/webapi/items` - Submit new item
 
 ## Rationale
-The idea behind Muon is simply to benchmark how minimal can a web-app be when based on the JDK.
+The idea behind Muon is simply to benchmark how small or large a web-application can be when based on the JDK when all minimal parts are assembled.
 
 Many of the toolkits an libraries used in Muon are industry standard. The less known libraries used here are probably *Spark*, *Sql2o* and *RestAssured*.
 
-Spark, even if it is not a widely used HTTP API library, is straightforward, lean, and contained: the web-app part of Muon is just `App` and `AbstractHandler` classes and the work needed to switch to Jersey (for example) is minimal.
+Spark, even if it is not a widely used HTTP API library, is straightforward, lean, and contained: the web-app part of Muon is just `App` and `AbstractHandler` classes and the work needed to switch to Jersey/JAX-RS (for example) is minimal.
 
-RestAssured is the greatest testing tool ever written: it allows to write REST integration tests in a very nice fluent DSL "given -> when -> then". It also integrates a nice JSON -> Class marshalling out of the box.
+RestAssured is the greatest testing tool ever written: it allows to write REST integration tests in a very nice fluent DSL "given -> when -> then". It also integrates a nice JSON --> POJO unwrapping out of the box.
 
 I chose not to use Hibernate or other ORM libraries, so the database is accessed through JDBC and SQL queries. Sql2o places itself between JDBC and the business logic: It wraps JDBC input and output streams with entity objects so the user does not need, for example, to navigate manually a ResultSet query and reconstruct manually the entity object retrieved. 
 
