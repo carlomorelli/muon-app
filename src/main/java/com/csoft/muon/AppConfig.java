@@ -1,10 +1,11 @@
 package com.csoft.muon;
 
-import java.io.IOException;
 import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import com.csoft.muon.provider.EnvConfProvider;
+import com.csoft.muon.provider.FileConfProvider;
 import com.csoft.muon.repository.Repository;
 import com.csoft.muon.repository.RepositoryImpl;
 import com.csoft.muon.repository.datasource.DataSourceFactory;
@@ -22,22 +23,22 @@ import com.google.inject.name.Names;
  */
 public class AppConfig extends AbstractModule {
 
-    private static final String CONF_FILE = "app.properties";
-    
-    
-    
     @Override
     protected void configure() {
         
-        Properties properties = new Properties();
-        try {
-            properties.load(getClass().getClassLoader().getResourceAsStream(CONF_FILE));
-        } catch (IOException e) {
-            throw new RuntimeException("Unable to access configuration file '" + CONF_FILE + "'.", e);
+        // try getting configuration from Env, otherwise try from File
+        Properties properties;
+        if (EnvConfProvider.isValid()) {
+            properties = EnvConfProvider.get();
+        } else if (FileConfProvider.isValid()) {
+            properties = FileConfProvider.get();
+        } else {
+            throw new RuntimeException("Unable to retrive valid configuration.");
         }
         
+        // bind configuration
         bind(Repository.class).to(RepositoryImpl.class);
-        bindConstant().annotatedWith(Names.named("type")).to(properties.getProperty("dataSource.type"));
+        bindConstant().annotatedWith(Names.named("type")).to(properties.getProperty("datasourcetype"));
     }
 
     
