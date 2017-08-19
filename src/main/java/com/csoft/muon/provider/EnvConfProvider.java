@@ -1,5 +1,6 @@
 package com.csoft.muon.provider;
 
+import java.util.Map;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -16,13 +17,13 @@ public enum EnvConfProvider {
     
     EnvConfProvider() {
         p = new Properties();
-
-        p.setProperty("datasourcetype", System.getProperty("DB_TYPE", NOT_CONFIGURED));
-        p.setProperty("hostname", System.getProperty("DB_HOSTNAME", NOT_CONFIGURED));
-        p.setProperty("port", System.getProperty("DB_PORT", NOT_CONFIGURED));
-        p.setProperty("database", System.getProperty("DB_NAME", NOT_CONFIGURED));
-        p.setProperty("username", System.getProperty("DB_USERNAME", NOT_CONFIGURED));
-        p.setProperty("password", System.getProperty("DB_PASSWORD", NOT_CONFIGURED));
+        Map<String, String> env = System.getenv();
+        p.setProperty("datasourcetype", env.getOrDefault("DB_TYPE", NOT_CONFIGURED));
+        p.setProperty("hostname", env.getOrDefault("DB_HOSTNAME", NOT_CONFIGURED));
+        p.setProperty("port", env.getOrDefault("DB_PORT", NOT_CONFIGURED));
+        p.setProperty("database", env.getOrDefault("DB_NAME", NOT_CONFIGURED));
+        p.setProperty("username", env.getOrDefault("DB_USERNAME", NOT_CONFIGURED));
+        p.setProperty("password", env.getOrDefault("DB_PASSWORD", NOT_CONFIGURED));
     }
     
     public static Boolean isValid() {
