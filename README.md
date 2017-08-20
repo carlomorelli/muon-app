@@ -60,7 +60,7 @@ mvn clean verify
 ## Run using Docker
 The provided `Dockerfile` will allow to easily ramp up a Docker container. The tricky part is to configure communication between the application inside Docker and the database server running on the Host machine.
 
-To build an image from the `Dockerfile`:
+To build an image from the `Dockerfile`, first build the application normally, then run:
 ```bash
 docker build -t muon-app-image .
 ```
@@ -72,7 +72,7 @@ The line `--net=host` part is needed for the muon app inside the docker containe
 
 Also in this case, try hitting the application's version page or the `/webapi/items/` API. If you see JSON content returned in both cases, everything is well. 
 
-It is worth noting that the `Dockerfile` included uses the official OpenJDK-8-Alpine base images, which are very compact. In particular to run the JAR it is only required to use the JRE image, which is including just the Java runtime. A built `muon-app-image` will weight **less than 90 Megabyes**:
+It is worth noting that the `Dockerfile` included uses the official OpenJDK-8-Alpine base images, which are very compact. Also, it is sufficient to use the JRE Runtime base image to run our built JAR inside the container. A built `muon-app-image` will weight around **90 Megabytes** as you can see:
 ```bash 
 $ docker images
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
@@ -116,6 +116,10 @@ Example:
 ```
 local all postgres trust
 local all all trust
+```
+WARNING: sometimes it is also required to change the third line with `md5` login to `trust` too. If you see a stacktrace error like "FATAL: password authentication failed for user postgres" at runtime, this action will probably fix it.
+```
+local all all 127.0.0.1/32 trust
 ```
 Finally, restart the db service: `sudo systemctl restart postgresql`
 
