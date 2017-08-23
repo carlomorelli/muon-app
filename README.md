@@ -32,38 +32,61 @@ The application uses a mixture of configuration file for handling the production
 Required for build are Java 8 JDK and Apache Maven 3.x.
 
 Once the project is cloned, enter the checkout directory and run 
-```
+```bash
 mvn clean package
 ```
 This will build and unit-test the code and produce the FatJar in the `target/` directory. 
 
 ## Run the application
-To run the application or the integration test, the requirement is to have a local install of PostgreSQL 9.x. *The application has been tested with version 9.4 and 9.5 on both Windows and Linux platforms*.
-
-To prepare the database service (one-off):
-* Install PostgreSQL 9.x as a service
-* Create a database with `createdb <dbname> -h localhost -U postgres`
-* Submit the schema file with `psql -d <dbname> -a -f ./src/main/resources/db/schema.sql`
+To run the application or the integration test, the requirement is to have a local install of *PostgreSQL 9.x* correctly setup. In order to prepare the database service, make reference to Appendix A.
 
 Once the Fat-Jar is built, the application can be simply run with
+```bash
+java -jar target/muon-app-<version>.jar
 ```
-java -jar target/muon-app-0.0.1-SNAPSHOT.jar
-```
-To test the app, you can hit the version page. On Linux or Windows Powershell:
-```
-$ curl localhost:8080/version
+To test the app, you can hit the version page and the `/webapi/items` API: if JSON content is returned, eveything is fine! On Linux or Windows Powershell:
+```bash
+curl localhost:8080/version
+curl localhost:8080/webapi/items
 ```
 To start the app on a different port than the default 8080, simply append the port on the launch command line. Example: `java -jar target/muon-app-0.0.1-SNAPSHOT.jar 9090` will start on port 9090.
+
 Integration tests can be launched with 
-```
+```bash
 mvn clean verify
 ```
 
 
-## HTTP api
+## Run using Docker
+The provided `Dockerfile` will allow to easily ramp up a Docker container. The tricky part is to configure communication between the application inside Docker and the database server running on the Host machine.
+
+To build an image from the `Dockerfile`, first build the application normally, then run:
+```bash
+docker build -t muon-app-image .
+```
+To launch:
+```bash
+docker run --net=host -p 8080:8080 muon-app-image
+```
+The line `--net=host` part is needed for the muon app inside the docker container to access the Postgres service running in the Host OS.
+
+Also in this case, try hitting the application's version page or the `/webapi/items/` API. If you see JSON content returned in both cases, everything is well. 
+
+It is worth noting that the `Dockerfile` included uses the official OpenJDK-8-Alpine base images, which are very compact. Also, it is sufficient to use the JRE Runtime base image to run our built JAR inside the container. A built `muon-app-image` will weight around **90 Megabytes** as you can see:
+```bash 
+$ docker images
+REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+muon-app-image      latest              dba8dd844d49        23 minutes ago      92MB
+openjdk             8-jre-alpine        c4f9d77cd2a1        7 weeks ago         81.4MB
+```
+
+ 
+## HTTP API reference
+* GET `http://localhost:8080/version` - Get application version page
 * GET `http://localhost:8080/webapi/items` - Get list of items and their details
 * GET `http://localhost:8080/webapi/items/1` - Get details on single item with id 1
 * POST `http://localhost:8080/webapi/items` - Submit new item
+
 
 ## Rationale
 The idea behind Muon is simply to benchmark how small or large a web-application can be when based on the JDK when all minimal parts are assembled.
@@ -77,10 +100,49 @@ RestAssured is the greatest testing tool ever written: it allows to write REST i
 I chose not to use Hibernate or other ORM libraries, so the database is accessed through JDBC and SQL queries. Sql2o places itself between JDBC and the business logic: It wraps JDBC input and output streams with entity objects so the user does not need, for example, to navigate manually a ResultSet query and reconstruct manually the entity object retrieved. 
 
 
+## APPENDIX: How to configure the database service
+
+The application has been tested with PostgreSQL version 9.4, 9.5, 9.6 on various combination with both Windows and Linux platforms. Following an example on how to configure the database installation.
+
+### Step 1: Install database server on Linux
+These instructions are relative to Debian "stretch" or "buster". Other linuxes require similar actions. If you are on Windows you apparently only need to run the Postgrs installer. You can skip this section as no action is required.
+
+Install and configure PostgreSQL service:
+```
+$ sudo apt install postgresql
+```
+Then edit file `/etc/postgres/<version>/main/pg_hba.conf` with admin privileges, and modify lines with `peer` login to `trust`.
+Example:
+```
+local all postgres trust
+local all all trust
+```
+WARNING: sometimes it is also required to change the third line with `md5` login to `trust` too. If you see a stacktrace error like "FATAL: password authentication failed for user postgres" at runtime, this action will probably fix it.
+```
+local all all 127.0.0.1/32 trust
+```
+Finally, restart the db service: `sudo systemctl restart postgresql`
+
+### Step 2: Prepare database
+This section applies on both Linux and Windows platforms.
+
+In the case the `postgres` database user password is not configured as empty, we must blank it with this: 
+```
+$ psql -U postgres
+postgres=# ALTER USER postgres PASSWORD '';
+postgres=# \q
+```
+After which, we are able to create the database and import the schema using the `postgres` DB user:
+```
+$ createdb <dbname> -U postgres
+$ psql -U postgres -d <dbname> -a -f ./src/main/resources/db/schema.sql
+```
+The DB now is ready.
+
+
 
 Happy coding!
+
 /Carlo
-
-
 
 
