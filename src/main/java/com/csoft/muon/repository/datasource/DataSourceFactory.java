@@ -1,6 +1,5 @@
 package com.csoft.muon.repository.datasource;
 
-import java.io.IOException;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -8,10 +7,11 @@ import javax.sql.DataSource;
 import org.h2.jdbcx.JdbcDataSource;
 import org.postgresql.ds.PGSimpleDataSource;
 
+import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 /**
- * Static factory to provide DataSource implementations for database access to
+ * Factory to provide DataSource implementations for database access to
  * the DI management framework
  * 
  * @author Carlo Morelli
@@ -19,29 +19,50 @@ import com.zaxxer.hikari.HikariDataSource;
  */
 public class DataSourceFactory {
 
-    public static DataSource getPostgresHikariCPDataSource() {
-        System.setProperty("hikaricp.configurationFile", "src/main/resources/configuration.properties");
-        return new HikariDataSource();
+    final String hostname;
+    final String port;
+    final String database;
+    final String username;
+    final String password;
+
+    private DataSourceFactory(Properties p) {
+        this.hostname = p.getProperty("hostname");
+        this.port = p.getProperty("port");
+        this.database = p.getProperty("database");
+        this.username = p.getProperty("username");
+        this.password = p.getProperty("password");
     }
 
-    public static DataSource getPosgresSimpleDataSource() {
-        try {
-            Properties props = new Properties();
-            props.load(ClassLoader.getSystemResourceAsStream("configuration.properties"));
-            PGSimpleDataSource ds = new PGSimpleDataSource();
-            ds.setServerName(props.getProperty("dataSource.serverName"));
-            ds.setPortNumber(Integer.parseInt(props.getProperty("dataSource.portNumber")));
-            ds.setDatabaseName(props.getProperty("dataSource.databaseName"));
-            ds.setUser(props.getProperty("dataSouce.username"));
-            ds.setPassword(props.getProperty("dataSource.password"));
-            return ds;
-        } catch (IOException e) {
-            throw new RuntimeException("Cannot load DB properties correctly from file.", e);
-        }
-
+    private DataSource withPostgresHikariCPDataSource() {
+        Properties dsConf = new Properties();
+        dsConf.setProperty("dataSourceClassName", "org.postgresql.ds.PGSimpleDataSource");
+        dsConf.setProperty("dataSource.user", username);
+        dsConf.setProperty("dataSource.password", password);
+        dsConf.setProperty("dataSource.databaseName", database);
+        dsConf.setProperty("dataSource.portNumber", port);
+        dsConf.setProperty("dataSource.serverName", hostname);
+        HikariConfig config = new HikariConfig(dsConf);
+        return new HikariDataSource(config);
     }
 
+    private DataSource withPosgresSimpleDataSource() {
+        PGSimpleDataSource ds = new PGSimpleDataSource();
+        ds.setUrl(String.format("jdbc:postgresql://%s:%s/%s", hostname, port, database));
+        ds.setUser(username);
+        ds.setPassword(password);
+        return ds;
+    }
+
+    public static DataSource getPostgresHikariCPDataSource(Properties p) {
+        return new DataSourceFactory(p).withPostgresHikariCPDataSource();
+    }
+
+    public static DataSource getPosgresSimpleDataSource(Properties p) {
+        return new DataSourceFactory(p).withPosgresSimpleDataSource();
+    }
     public static DataSource getH2DataSource() {
+        
+        // this factory does not depend on injected properties, used for test only
         JdbcDataSource ds = new JdbcDataSource();
         ds.setURL("jdbc:h2:./test");
         ds.setUser("sa");

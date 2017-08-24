@@ -23,7 +23,7 @@ In Muon the following Java technologies are combined:
 The project is in Continuous Integration on [Travis-CI](https://travis-ci.org/carlomorelli/project-muon).
 The [Cobertura Maven plugin](http://www.mojohaus.org/cobertura-maven-plugin/) and [Coveralls](https://coveralls.io/github/carlomorelli/project-muon) service are used for reporting the code coverage results; you can check out the `pom.xml` in the `<plugin>...</plugin>` section to understand how the service is integrated.
 
-Even if the Java technologies employed are a few, a Fat-Jar version of Muon weights **less than 12 Megabytes**, making the minification for possible microservices and Docker containers pretty easy. We measured a start up time between 1 and 3 seconds including connection pooling to the database.
+Even if the Java technologies employed are a few, a Uber-Jar version of Muon weights **less than 12 Megabytes**, making the minification for possible microservices and Docker containers pretty easy. We measured a start up time between 1 and 4 seconds including connection pooling to the database. Using the sample Dockerfile the size of the Docker image is about **90 Megabytes**. 
 
 ## Configuration
 The application uses a mixture of configuration file for handling the production database (at `src/main/resources/configuration.properties`), and a Guice module `AppConfig` for injecting the application and the test code.
@@ -35,12 +35,12 @@ Once the project is cloned, enter the checkout directory and run
 ```bash
 mvn clean package
 ```
-This will build and unit-test the code and produce the FatJar in the `target/` directory. 
+This will build and unit-test the code and produce the Uber-Jar in the `target/` directory. 
 
 ## Run the application
 To run the application or the integration test, the requirement is to have a local install of *PostgreSQL 9.x* correctly setup. In order to prepare the database service, make reference to Appendix A.
 
-Once the Fat-Jar is built, the application can be simply run with
+Once the Uber-Jar is built, the application can be simply run with
 ```bash
 java -jar target/muon-app-<version>.jar
 ```
@@ -60,7 +60,7 @@ mvn clean verify
 ## Run using Docker
 The provided `Dockerfile` will allow to easily ramp up a Docker container. The tricky part is to configure communication between the application inside Docker and the database server running on the Host machine.
 
-To build an image from the `Dockerfile`, first build the application normally, then run:
+To build an image from the `Dockerfile`, first build the application normally (the Uber-Jar needs to be ready in directory `target/`), then run:
 ```bash
 docker build -t muon-app-image .
 ```
@@ -72,7 +72,7 @@ The line `--net=host` part is needed for the muon app inside the docker containe
 
 Also in this case, try hitting the application's version page or the `/webapi/items/` API. If you see JSON content returned in both cases, everything is well. 
 
-It is worth noting that the `Dockerfile` included uses the official OpenJDK-8-Alpine base images, which are very compact. Also, it is sufficient to use the JRE Runtime base image to run our built JAR inside the container. A built `muon-app-image` will weight around **90 Megabytes** as you can see:
+It is worth noting that the `Dockerfile` included uses the official OpenJDK-8-Alpine base images, which are very compact. Also, it is sufficient to use the JRE Runtime base image to run our built JAR inside the container. As mentioned earlier, a built `muon-app-image` will weight around 90 Megabytes as you can see:
 ```bash 
 $ docker images
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE

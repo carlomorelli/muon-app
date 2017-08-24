@@ -23,7 +23,7 @@ public final class VersionHandler implements Route {
     public Object handle(Request request, Response response) {
         Properties props = new Properties();
         try {
-            props.load(ClassLoader.getSystemResourceAsStream("app.properties"));
+            props.load(getClass().getClassLoader().getResourceAsStream("application.properties"));
             String projectName = props.getProperty("project.name");
             String projectVersion = props.getProperty("project.version");
             String versionPage = dumpJson(new Version(projectName, projectVersion));
