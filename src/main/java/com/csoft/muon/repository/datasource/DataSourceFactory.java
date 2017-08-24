@@ -1,6 +1,5 @@
 package com.csoft.muon.repository.datasource;
 
-import java.io.IOException;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -19,29 +18,48 @@ import com.zaxxer.hikari.HikariDataSource;
  */
 public class DataSourceFactory {
 
-    public static DataSource getPostgresHikariCPDataSource() {
-        System.setProperty("hikaricp.configurationFile", "src/main/resources/configuration.properties");
-        return new HikariDataSource();
+    final String hostname;
+    final String port;
+    final String database;
+    final String username;
+    final String password;
+    
+    
+    private DataSourceFactory(Properties dbProps) {
+        this.hostname = dbProps.getProperty("hostname");
+        this.port = dbProps.getProperty("port");
+        this.database = dbProps.getProperty("database");
+        this.username = dbProps.getProperty("username");
+        this.password = dbProps.getProperty("password");
+    }
+    
+    private DataSource withPostgresHikariCPDataSource() {
+        HikariDataSource ds = new HikariDataSource();
+        ds.setJdbcUrl(String.format("jdbc:postgresql://%s:%s/%s", hostname, port, database));
+        ds.setUsername(username);
+        ds.setPassword(password);
+        //ds.setDriverClassName("org.postgresql.ds.PGSimpleDataSource");
+        return ds;
     }
 
-    public static DataSource getPosgresSimpleDataSource() {
-        try {
-            Properties props = new Properties();
-            props.load(ClassLoader.getSystemResourceAsStream("configuration.properties"));
-            PGSimpleDataSource ds = new PGSimpleDataSource();
-            ds.setServerName(props.getProperty("dataSource.serverName"));
-            ds.setPortNumber(Integer.parseInt(props.getProperty("dataSource.portNumber")));
-            ds.setDatabaseName(props.getProperty("dataSource.databaseName"));
-            ds.setUser(props.getProperty("dataSouce.username"));
-            ds.setPassword(props.getProperty("dataSource.password"));
-            return ds;
-        } catch (IOException e) {
-            throw new RuntimeException("Cannot load DB properties correctly from file.", e);
-        }
-
+    private DataSource withPosgresSimpleDataSource() {
+        PGSimpleDataSource ds = new PGSimpleDataSource();
+        ds.setUrl(String.format("jdbc:postgresql://%s:%s/%s", hostname, port, database));
+        ds.setUser(username);
+        ds.setPassword(password);
+        return ds;
     }
 
+    public static DataSource getPostgresHikariCPDataSource(Properties dbProps) {
+        return new DataSourceFactory(dbProps).withPostgresHikariCPDataSource();
+    }
+
+    public static DataSource getPosgresSimpleDataSource(Properties dbProps) {
+        return new DataSourceFactory(dbProps).withPosgresSimpleDataSource();
+    }
     public static DataSource getH2DataSource() {
+        
+        // this factory does not depend on injected properties, used for test only
         JdbcDataSource ds = new JdbcDataSource();
         ds.setURL("jdbc:h2:./test");
         ds.setUser("sa");

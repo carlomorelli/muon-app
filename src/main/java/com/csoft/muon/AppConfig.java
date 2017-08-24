@@ -4,6 +4,9 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.csoft.muon.provider.EnvConfProvider;
 import com.csoft.muon.provider.FileConfProvider;
 import com.csoft.muon.repository.Repository;
@@ -23,18 +26,30 @@ import com.google.inject.name.Names;
  */
 public class AppConfig extends AbstractModule {
 
-    @Override
-    protected void configure() {
-        
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
+    
+    private Properties properties;
+    
+    AppConfig() {
+        super();
+
         // try getting configuration from Env, otherwise try from File
-        Properties properties;
         if (EnvConfProvider.isValid()) {
+            LOGGER.info("Using env-variables based configuration.");
             properties = EnvConfProvider.get();
         } else if (FileConfProvider.isValid()) {
+            LOGGER.info("Using file based configuration.");
             properties = FileConfProvider.get();
         } else {
             throw new RuntimeException("Unable to retrive valid configuration.");
         }
+        
+    }
+    
+    
+    @Override
+    protected void configure() {
+        
         
         // bind configuration
         bind(Repository.class).to(RepositoryImpl.class);
@@ -47,9 +62,9 @@ public class AppConfig extends AbstractModule {
     @Singleton
     public DataSource getDataSource(@Named("type") String type) {
         if (type.equals("postgres-hikari")) {
-            return DataSourceFactory.getPostgresHikariCPDataSource();
+            return DataSourceFactory.getPostgresHikariCPDataSource(properties);
         } else if (type.equals("postgres-simple")) {
-            return DataSourceFactory.getPosgresSimpleDataSource();
+            return DataSourceFactory.getPosgresSimpleDataSource(properties);
         } else {
             return DataSourceFactory.getH2DataSource();
         }

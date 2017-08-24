@@ -13,7 +13,7 @@ public enum FileConfProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(FileConfProvider.class);
     private static final String NOT_CONFIGURED = "notConfigured";
     
-    private static final String CONF_FILE = "app.properties";
+    private static final String CONF_FILE = "application.properties";
     
     private Properties p;
     
@@ -35,7 +35,7 @@ public enum FileConfProvider {
     public static Boolean isValid() {
         INSTANCE.p.keySet().forEach(key -> {
             if (INSTANCE.p.get(key).equals(NOT_CONFIGURED)) {
-                LOGGER.warn("File variable <{}> not assigned", key);
+                LOGGER.debug("File variable <{}> not assigned", key);
             }
         });
         return !INSTANCE.p.containsValue(NOT_CONFIGURED);

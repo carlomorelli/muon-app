@@ -29,7 +29,7 @@ public enum EnvConfProvider {
     public static Boolean isValid() {
         INSTANCE.p.keySet().forEach(key -> {
             if (INSTANCE.p.get(key).equals(NOT_CONFIGURED)) {
-                LOGGER.warn("Env variable <{}> not assigned", key);
+                LOGGER.debug("Env variable <{}> not assigned", key);
             }
         });
         return !INSTANCE.p.containsValue(NOT_CONFIGURED);
