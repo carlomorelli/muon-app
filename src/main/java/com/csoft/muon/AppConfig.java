@@ -38,7 +38,7 @@ public class AppConfig extends AbstractModule {
             LOGGER.info("Using env-variables based configuration.");
             properties = EnvConfProvider.get();
         } else if (FileConfProvider.isValid()) {
-            LOGGER.info("Using file based configuration.");
+            LOGGER.info("Env-variables based configuration incomplete. Using file based configuration.");
             properties = FileConfProvider.get();
         } else {
             throw new RuntimeException("Unable to retrive valid configuration.");
