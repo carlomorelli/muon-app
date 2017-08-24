@@ -43,21 +43,16 @@ public class AppConfig extends AbstractModule {
         } else {
             throw new RuntimeException("Unable to retrive valid configuration.");
         }
-        
     }
-    
-    
+
     @Override
     protected void configure() {
-        
-        
+
         // bind configuration
         bind(Repository.class).to(RepositoryImpl.class);
         bindConstant().annotatedWith(Names.named("type")).to(properties.getProperty("datasourcetype"));
     }
 
-    
-    
     @Provides
     @Singleton
     public DataSource getDataSource(@Named("type") String type) {
