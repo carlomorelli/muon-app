@@ -7,6 +7,7 @@ import javax.sql.DataSource;
 import org.h2.jdbcx.JdbcDataSource;
 import org.postgresql.ds.PGSimpleDataSource;
 
+import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
 /**
@@ -34,13 +35,24 @@ public class DataSourceFactory {
     }
     
     private DataSource withPostgresHikariCPDataSource() {
-        HikariDataSource ds = new HikariDataSource();
-        ds.setJdbcUrl(String.format("jdbc:postgresql://%s:%s/%s", hostname, port, database));
-        ds.setUsername(username);
-        ds.setPassword(password);
-        ds.setDataSourceClassName("org.postgresql.ds.PGSimpleDataSource");
-        //STILL NEED TO DO THIS OR LINUX FAILS ds.setDriverClassName("org.postgresql.ds.PGSimpleDataSource");
-        return ds;
+        Properties props = new Properties();
+        props.setProperty("dataSourceClassName", "org.postgresql.ds.PGSimpleDataSource");
+        props.setProperty("dataSource.user", username);
+        props.setProperty("dataSource.password", password);
+        props.setProperty("dataSource.databaseName", database);
+        props.setProperty("dataSource.portNumber", port);
+        props.setProperty("dataSource.serverName", hostname);
+        HikariConfig config = new HikariConfig(props);
+        return new HikariDataSource(config);
+        
+//        config.setDataSourceClassName(className);
+//        config.setData
+//        ds.setJdbcUrl(String.format("jdbc:postgresql://%s:%s/%s", hostname, port, database));
+//        ds.setUsername(username);
+//        ds.setPassword(password);
+//        ds.setDataSourceClassName("org.postgresql.ds.PGSimpleDataSource");
+//        //STILL NEED TO DO THIS OR LINUX FAILS ds.setDriverClassName("org.postgresql.ds.PGSimpleDataSource");
+//        return ds;
     }
 
     private DataSource withPosgresSimpleDataSource() {
