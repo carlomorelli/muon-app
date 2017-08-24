@@ -38,7 +38,8 @@ public class DataSourceFactory {
         ds.setJdbcUrl(String.format("jdbc:postgresql://%s:%s/%s", hostname, port, database));
         ds.setUsername(username);
         ds.setPassword(password);
-        //ds.setDriverClassName("org.postgresql.ds.PGSimpleDataSource");
+        ds.setDataSourceClassName("org.postgresql.ds.PGSimpleDataSource");
+        //STILL NEED TO DO THIS OR LINUX FAILS ds.setDriverClassName("org.postgresql.ds.PGSimpleDataSource");
         return ds;
     }
 
