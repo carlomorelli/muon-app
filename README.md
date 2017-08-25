@@ -26,7 +26,9 @@ The [Cobertura Maven plugin](http://www.mojohaus.org/cobertura-maven-plugin/) an
 Even if the Java technologies employed are a few, a Uber-Jar version of Muon weights **less than 12 Megabytes**, making the minification for possible microservices and Docker containers pretty easy. We measured a start up time between 1 and 4 seconds including connection pooling to the database. Using the sample Dockerfile the size of the Docker image is about **90 Megabytes**. 
 
 ## Configuration
-The application uses a mixture of configuration file for handling the production database (at `src/main/resources/configuration.properties`), and a Guice module `AppConfig` for injecting the application and the test code.
+The application can be configured via Env variables or using file in classpath `src/main/resources/application.properties`. Please check out the wiki page [Configuration management](https://github.com/carlomorelli/muon-app/wiki/Configuration-management).
+
+The integration tests follow the same configurations of the application (e.g. the database).
 
 ## Build the project
 Required for build are Java 8 JDK and Apache Maven 3.x.
@@ -100,45 +102,11 @@ RestAssured is the greatest testing tool ever written: it allows to write REST i
 I chose not to use Hibernate or other ORM libraries, so the database is accessed through JDBC and SQL queries. Sql2o places itself between JDBC and the business logic: It wraps JDBC input and output streams with entity objects so the user does not need, for example, to navigate manually a ResultSet query and reconstruct manually the entity object retrieved. 
 
 
-## APPENDIX: How to configure the database service
+## Guides and reference documentation
 
-The application has been tested with PostgreSQL version 9.4, 9.5, 9.6 on various combination with both Windows and Linux platforms. Following an example on how to configure the database installation.
-
-### Step 1: Install database server on Linux
-These instructions are relative to Debian "stretch" or "buster". Other linuxes require similar actions. If you are on Windows you apparently only need to run the Postgrs installer. You can skip this section as no action is required.
-
-Install and configure PostgreSQL service:
-```
-$ sudo apt install postgresql
-```
-Then edit file `/etc/postgres/<version>/main/pg_hba.conf` with admin privileges, and modify lines with `peer` login to `trust`.
-Example:
-```
-local all postgres trust
-local all all trust
-```
-WARNING: sometimes it is also required to change the third line with `md5` login to `trust` too. If you see a stacktrace error like "FATAL: password authentication failed for user postgres" at runtime, this action will probably fix it.
-```
-local all all 127.0.0.1/32 trust
-```
-Finally, restart the db service: `sudo systemctl restart postgresql`
-
-### Step 2: Prepare database
-This section applies on both Linux and Windows platforms.
-
-In the case the `postgres` database user password is not configured as empty, we must blank it with this: 
-```
-$ psql -U postgres
-postgres=# ALTER USER postgres PASSWORD '';
-postgres=# \q
-```
-After which, we are able to create the database and import the schema using the `postgres` DB user:
-```
-$ createdb <dbname> -U postgres
-$ psql -U postgres -d <dbname> -a -f ./src/main/resources/db/schema.sql
-```
-The DB now is ready.
-
+* [Configuration management](https://github.com/carlomorelli/muon-app/wiki/Configuration-management)
+* [Setting up PostgreSQL](https://github.com/carlomorelli/muon-app/wiki/Setting-up-PostgreSQL)
+* [Running with Docker](https://github.com/carlomorelli/muon-app/wiki/Running-with-Docker)
 
 
 Happy coding!
