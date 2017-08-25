@@ -21,5 +21,7 @@ public interface Repository {
     void updateItem(Item item) throws RepositoryException;
 
     void deleteItemAtIndex(int index) throws RepositoryException;
+    
+    Boolean isHealthy();
 
 }

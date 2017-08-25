@@ -1,5 +1,11 @@
 package com.csoft.muon.domain;
 
+/**
+ * Version entity
+ * 
+ * @author Carlo Morelli
+ *
+ */
 public final class Version {
 
     private String name;
