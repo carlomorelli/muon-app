@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.csoft.muon.handler.GetHandler;
 import com.csoft.muon.handler.GetListHandler;
+import com.csoft.muon.handler.HealthHandler;
 import com.csoft.muon.handler.PostHandler;
 import com.csoft.muon.handler.VersionHandler;
 import com.csoft.muon.repository.Repository;
@@ -45,6 +46,7 @@ public class App {
         LOGGER.info("Starting service on port " + webPort + "...");
         port(webPort);
         get("/version", new VersionHandler());
+        get("/health", new HealthHandler(repo));
         get("/webapi/items/:index", new GetHandler(repo));
         get("/webapi/items", new GetListHandler(repo));
         post("/webapi/items", new PostHandler(repo));

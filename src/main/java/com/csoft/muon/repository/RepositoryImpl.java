@@ -130,4 +130,17 @@ public class RepositoryImpl implements Repository {
         conn.close();
     }
 
+    public Boolean isHealthy() {
+        String sql = "SELECT 1";
+        Connection conn = sql2o.open();
+        try {
+            conn.createQuery(sql)
+                    .executeScalar();
+            return true;
+        } catch (Sql2oException e) {
+            LOGGER.warn("Database unreachable.");
+            return false;
+        }
+    }
+
 }

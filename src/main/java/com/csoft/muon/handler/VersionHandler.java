@@ -3,13 +3,11 @@ package com.csoft.muon.handler;
 import static com.csoft.muon.utils.JsonFunctions.dumpJson;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Properties;
 
 import com.csoft.muon.domain.Version;
-
-import spark.Request;
-import spark.Response;
-import spark.Route;
+import com.csoft.muon.events.HttpErrorEvent;
 
 /**
  * Final class for Version page
@@ -17,23 +15,28 @@ import spark.Route;
  * @author Carlo Morelli
  *
  */
-public final class VersionHandler implements Route {
+public final class VersionHandler extends AbstractHandler {
+
+    public VersionHandler() {
+        super(null);
+    }
 
     @Override
-    public Object handle(Request request, Response response) {
+    public Result process(String requestBody, Map<String, String> requestParams) {
+        if (requestBody != null && !requestBody.isEmpty()) {
+            return HttpErrorEvent.SC_400_FORBIDDEN_BODY.asResult();
+        }
         Properties props = new Properties();
         try {
             props.load(getClass().getClassLoader().getResourceAsStream("application.properties"));
             String projectName = props.getProperty("project.name");
             String projectVersion = props.getProperty("project.version");
             String versionPage = dumpJson(new Version(projectName, projectVersion));
-            response.status(200);
-            response.type("application/json");
-            response.body(versionPage);
-            return versionPage;
+            return new Result(200, versionPage);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return HttpErrorEvent.SC_503_ERROR_CREATING_RETURN_BODY.asResult();
         }
     }
+
 
 }
