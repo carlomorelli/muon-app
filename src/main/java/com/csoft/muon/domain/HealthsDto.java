@@ -11,7 +11,10 @@ import java.util.List;
 public class HealthsDto {
 
     private List<Health> components;
-    
+
+    public HealthsDto() {
+    }
+
     public HealthsDto(List<Health> components) {
         this.components = components;
     }
