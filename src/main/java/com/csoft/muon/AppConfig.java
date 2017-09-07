@@ -61,7 +61,7 @@ public class AppConfig extends AbstractModule {
         } else if (type.equals("postgres-simple")) {
             return DataSourceFactory.getPosgresSimpleDataSource(properties);
         } else {
-            return DataSourceFactory.getH2DataSource();
+            throw new RuntimeException("Unable to configure database, wrong 'datasourcetype' property received.");
         }
     }
 }
