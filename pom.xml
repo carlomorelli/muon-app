@@ -14,9 +14,11 @@
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
     <maven-surefire-plugin.version>2.20</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>2.20</maven-failsafe-plugin.version>
+    <maven-shade-plugin.version>3.0.0</maven-shade-plugin.version>
     <maven-cobertura-plugin.version>2.7</maven-cobertura-plugin.version>
     <maven-coveralls-plugin.version>4.3.0</maven-coveralls-plugin.version>
     <guice.version>4.1.0</guice.version>
+    <hibernate.version>5.2.10.Final</hibernate.version>
     <slf4j.version>1.7.21</slf4j.version>
     <logback.version>1.0.13</logback.version>
     <sparkjava.version>2.6.0</sparkjava.version>
@@ -35,6 +37,11 @@
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
       <version>${guice.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>${hibernate.version}</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -121,7 +128,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>${maven-shade-plugin.version}</version>
         <executions>
           <execution>
             <phase>package</phase>

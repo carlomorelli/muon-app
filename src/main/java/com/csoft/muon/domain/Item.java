@@ -3,6 +3,13 @@ package com.csoft.muon.domain;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -13,6 +20,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * @author Carlo Morelli
  *
  */
+@Entity
+@Table(name="ITEMS")
 @JsonInclude(Include.NON_NULL)
 public class Item {
 
@@ -34,6 +43,9 @@ public class Item {
         this.label = label;
     }
 
+    @Id
+    @GeneratedValue(generator="increment")
+    @GenericGenerator(name="increment", strategy = "increment")
     public Integer getIndex() {
         return index;
     }
