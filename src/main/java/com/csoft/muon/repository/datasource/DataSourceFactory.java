@@ -64,7 +64,7 @@ public class DataSourceFactory {
         
         // this factory does not depend on injected properties, used for test only
         JdbcDataSource ds = new JdbcDataSource();
-        ds.setURL("jdbc:h2:./test");
+        ds.setURL("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
         ds.setUser("sa");
         ds.setPassword("sa");
         return ds;

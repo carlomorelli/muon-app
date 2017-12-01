@@ -21,9 +21,6 @@ import com.csoft.muon.domain.Item;
 import com.csoft.muon.repository.RepositoryException;
 import com.csoft.muon.repository.RepositoryImpl;
 import com.csoft.muon.repository.datasource.DataSourceFactory;
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 
 public class RepositoryTest {
 
@@ -32,15 +29,8 @@ public class RepositoryTest {
 
     @BeforeClass
     public void setupClass() {
-
-        // force usage of H2 for all Repository unit tests
-        Injector injector = Guice.createInjector(new AbstractModule() {
-            @Override
-            protected void configure() {
-                bind(DataSource.class).toInstance(DataSourceFactory.getH2DataSource());
-            }
-        });
-        ds = injector.getInstance(DataSource.class);
+        // for the unit tests, we use always the in-memory H2 db
+        ds = DataSourceFactory.getH2DataSource();
     }
 
     @BeforeMethod
