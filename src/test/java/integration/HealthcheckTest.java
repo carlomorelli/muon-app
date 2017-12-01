@@ -16,8 +16,13 @@ import com.csoft.muon.utils.RandomFunctions;
 
 import io.restassured.http.ContentType;
 
+/**
+ * Test class covering healthcheck API.
+ * 
+ * @author Carlo Morelli
+ *
+ */
 public class HealthcheckTest extends BaseTest {
-
 
     @Test
     public void testVersionPage() {
