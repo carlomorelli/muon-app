@@ -22,7 +22,7 @@
     <slf4j.version>1.7.25</slf4j.version>
     <logback.version>1.2.3</logback.version>
     <sparkjava.version>2.7.2</sparkjava.version>
-    <jackson.version>2.9.5</jackson.version>
+    <jackson.version>2.12.7.1</jackson.version>
     <h2.version>1.4.197</h2.version>
     <sql2o.version>1.5.4</sql2o.version>
     <hikari.version>2.7.8</hikari.version>
